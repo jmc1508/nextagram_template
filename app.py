@@ -1,6 +1,6 @@
 import os
 import config
-from flask import Flask
+from flask import Flask, render_template
 from models.base_model import db
 
 web_dir = os.path.join(os.path.dirname(
@@ -23,3 +23,9 @@ def before_request():
 def after_request(response):
     db.close()
     return response
+
+# View: User sign in
+@app.route("/users/new")
+def new_user():
+
+    return render_template('sign_up.html')
