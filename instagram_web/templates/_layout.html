@@ -18,6 +18,28 @@
     <title>{% block title %}{% endblock %}NEXTAGRAM</title>
   </head>
   <body>
+    <!-- Bootstrap - Navbar -->
+    <nav class="navbar navbar-expand-md bg-light navbar-light">
+        <a class="navbar-brand" href="#">
+            <img src="../static/logo_nextagram.jpg" >
+            Nextagram</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <ul class="navbar-nav mr-auto"></ul>
+            <form class="form-inline">
+                <input class="form-control mr-sm-2"placeholder="Search">
+                <button class="btn btn-outline-success my-2" type="submit">Search</button>
+            </form>
+            <div class ="navbar-nav ml-3">
+                <a class="nav-item nav-link active">Users</a>
+                <a class="nav-item nav-link active">Sign In</a>
+                <a class="nav-item nav-link active">Sign Up</a>
+            </div>
+        </div>  
+    </nav>
     {% block content %}
     {% endblock %}
   </body>

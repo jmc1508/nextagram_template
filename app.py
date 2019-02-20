@@ -1,7 +1,8 @@
 import os
 import config
-from flask import Flask, render_template
+from flask import Flask, render_template, request,redirect,url_for,flash
 from models.base_model import db
+from models.user import User
 
 web_dir = os.path.join(os.path.dirname(
     os.path.abspath(__file__)), 'instagram_web')
@@ -28,4 +29,13 @@ def after_request(response):
 @app.route("/users/new")
 def new_user():
 
-    return render_template('sign_up.html')
+    return render_template('sign_up.html',   )
+
+# Create: User sign in
+@app.route("/users", methods=['POST'])
+def create_new_user():
+
+    query=request.form['username']
+    print(query)
+    
+    return redirect(url_for('new_user'))
