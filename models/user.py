@@ -11,6 +11,7 @@ class User(BaseModel):
 
     def validate(self):
         duplicate_username=User.get_or_none(User.username==self.username)
+        
 
         if duplicate_username:
-            self.errors.append('Username is not unique')
+            self.errors.append('Error: your username is not unique')

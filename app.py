@@ -43,7 +43,15 @@ def create_new_user():
     # Create new field in User table
 
     user = User(username=username,email=email,password=password)
-    user.save()
 
+    # Create error validation
 
-    return redirect(url_for('new_user'))
+    if user.save():
+
+        flash('User successfuly signed up')
+        return redirect(url_for('new_user'))
+    else:
+
+        return render_template('sign_up.html', errors=user.errors)
+
+    

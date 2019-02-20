@@ -40,6 +40,26 @@
             </div>
         </div>  
     </nav>
+
+<!-- Flash message -->
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      <ul class=flashes>
+      {% for message in messages %}
+        <li>{{ message }}</li>
+      {% endfor %}
+      </ul>
+    {% endif %}
+  {% endwith %}
+
+
+<!-- Error Message -->
+
+    {% for error in errors if errors|length > 0 %}
+      <li>{{error}}</li>
+    {% endfor %}
+
+<!-- Start Extend -->
     {% block content %}
     {% endblock %}
   </body>
