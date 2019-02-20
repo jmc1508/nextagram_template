@@ -27,10 +27,11 @@ def after_request(response):
     return response
 
 # View: User sign in
-@app.route("/users/new")
+@app.route("/users/")
 def new_user():
 
-    return render_template('sign_up.html',   )
+    return render_template('sign_up.html'  )
+
 
 # Create: User sign in
 @app.route("/users", methods=['POST'])
