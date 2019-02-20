@@ -5,6 +5,7 @@ from models.base_model import db
 from models.user import User
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_wtf.csrf import CSRFProtect, CSRFError
+from flask_login import LoginManager, login_user
 
 web_dir = os.path.join(os.path.dirname(
     os.path.abspath(__file__)), 'instagram_web')
@@ -12,7 +13,9 @@ web_dir = os.path.join(os.path.dirname(
 app = Flask('NEXTAGRAM', root_path=web_dir)
 # Add CSRF
 csrf=CSRFProtect(app)
-
+# Add login manager
+login_manager=LoginManager()
+login_manager.init_app(app)
 
 if os.getenv('FLASK_ENV') == 'production':
     app.config.from_object("config.ProductionConfig")
@@ -35,7 +38,7 @@ def after_request(response):
 def index():
 
     if 'username' in session:
-        return 'Logged in as username'
+        print ('User in session')
 
     return render_template('home.html')
 
@@ -91,8 +94,10 @@ def check_sign_in():
         result=check_password_hash(user.password,password_to_check)
 
         if result:
-            flash('Successful sign-in')
+
+            flash('Logged in successfully')
             # Add in session key
+            
             session['username']=request.form['username']
             return redirect(url_for("index"))
         else:
@@ -103,3 +108,8 @@ def check_sign_in():
 
         return render_template('sign_in.html')
  
+@app.route('/logout')
+def logout():
+    # remove the username from the session if it's there
+    session.pop('username', None)
+    return redirect(url_for('index'))
