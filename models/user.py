@@ -1,5 +1,6 @@
 from models.base_model import BaseModel
 import peewee as pw
+from werkzeug.security import generate_password_hash, check_password_hash
 
 
 
@@ -14,6 +15,10 @@ class User(BaseModel):
 
         duplicate_username=User.get_or_none(User.username==self.username)
         duplicate_email=User.get_or_none(User.email==self.email)
+        if len(self.password)<8 or len(self.password)>15:
+            self.errors.append('Error: password must be 8 & 15')
+        else:
+            self.password=generate_password_hash(self.password)
 
         # Empty field
         
