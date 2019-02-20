@@ -73,11 +73,27 @@ def sign_in():
 @app.route("/sign_in", methods=['POST'])
 def check_sign_in():
 
-    get_username=request.form['username']
-    
-    # query = User.get(User.id).where(User.username==get_username)
+    # Get username
+    form_username=request.form['username']
 
+    # Check whether input username is in the database. How to break if this fails
+    # user=User.get(User.username==form_username)
 
+    user=User.get_or_none(User.username==form_username)
 
+    if user:
+        password_to_check=request.form['password']
+        hashed_password= user.password
+        result=check_password_hash(hashed_password,password_to_check)
 
-    return redirect(url_for("sign_in"))
+        if result:
+            flash('Successful sign-in')
+            return redirect(url_for("sign_in"))
+        else:
+            flash('You have entered a wrong login or password')
+            return render_template('sign_in.html')
+    else:
+        flash('Incorrect username or password')
+
+        return render_template('sign_in.html')
+ 
