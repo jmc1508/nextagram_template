@@ -40,8 +40,10 @@ def create_new_user():
     email=request.form['email']
     password=request.form['password']
 
-    print('Username is ', username)
-    print('Email is ', email)
-    print('Password is ', password)
+    # Create new field in User table
+
+    user = User(username=username,email=email,password=password)
+    user.save()
+
 
     return redirect(url_for('new_user'))
