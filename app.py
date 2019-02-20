@@ -36,12 +36,10 @@ def new_user():
 def create_new_user():
 
     # Get name,username,email, password
-    name=request.form['name']
     username=request.form['username']
     email=request.form['email']
     password=request.form['password']
 
-    print('Name is ', name)
     print('Username is ', username)
     print('Email is ', email)
     print('Password is ', password)
