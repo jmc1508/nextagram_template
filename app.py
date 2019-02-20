@@ -3,6 +3,7 @@ import config
 from flask import Flask, render_template, request,redirect,url_for,flash
 from models.base_model import db
 from models.user import User
+from werkzeug.security import generate_password_hash
 
 web_dir = os.path.join(os.path.dirname(
     os.path.abspath(__file__)), 'instagram_web')
@@ -39,10 +40,11 @@ def create_new_user():
     username=request.form['username']
     email=request.form['email']
     password=request.form['password']
+    hashed_password=generate_password_hash(password)
 
     # Create new field in User table
 
-    user = User(username=username,email=email,password=password)
+    user = User(username=username,email=email,password=hashed_password)
 
     # Create error validation
 
