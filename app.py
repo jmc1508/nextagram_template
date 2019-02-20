@@ -35,7 +35,15 @@ def new_user():
 @app.route("/users", methods=['POST'])
 def create_new_user():
 
-    query=request.form['username']
-    print(query)
-    
+    # Get name,username,email, password
+    name=request.form['name']
+    username=request.form['username']
+    email=request.form['email']
+    password=request.form['password']
+
+    print('Name is ', name)
+    print('Username is ', username)
+    print('Email is ', email)
+    print('Password is ', password)
+
     return redirect(url_for('new_user'))
