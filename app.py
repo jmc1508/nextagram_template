@@ -1,6 +1,6 @@
 import os
 import config
-from flask import Flask, render_template, request,redirect,url_for,flash
+from flask import Flask, render_template, request,redirect,url_for,flash,session
 from models.base_model import db
 from models.user import User
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -30,6 +30,15 @@ def after_request(response):
     db.close()
     return response
 
+# View: Index
+@app.route("/")
+def index():
+
+    if 'username' in session:
+        return 'Logged in as username'
+
+    return render_template('home.html')
+
 # View: New user
 @app.route("/users/new")
 def new_user():
@@ -45,7 +54,6 @@ def create_new_user():
     username=request.form['username']
     email=request.form['email']
     password=request.form['password']
-    # hashed_password=generate_password_hash(password)
  
     # Create new field in User table
 
@@ -76,24 +84,22 @@ def check_sign_in():
     # Get username
     form_username=request.form['username']
 
-    # Check whether input username is in the database. How to break if this fails
-    # user=User.get(User.username==form_username)
-
     user=User.get_or_none(User.username==form_username)
 
     if user:
         password_to_check=request.form['password']
-        hashed_password= user.password
-        result=check_password_hash(hashed_password,password_to_check)
+        result=check_password_hash(user.password,password_to_check)
 
         if result:
             flash('Successful sign-in')
-            return redirect(url_for("sign_in"))
+            # Add in session key
+            session['username']=request.form['username']
+            return redirect(url_for("index"))
         else:
-            flash('You have entered a wrong login or password')
+            flash('Error: Incorrect username or password')
             return render_template('sign_in.html')
     else:
-        flash('Incorrect username or password')
+        flash('Error: Incorrect username or password')
 
         return render_template('sign_in.html')
  
