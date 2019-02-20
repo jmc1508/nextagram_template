@@ -10,8 +10,20 @@ class User(BaseModel):
     password=pw.CharField(max_length=128)
 
     def validate(self):
-        duplicate_username=User.get_or_none(User.username==self.username)
-        
+        # Duplicates
 
+        duplicate_username=User.get_or_none(User.username==self.username)
+        duplicate_email=User.get_or_none(User.email==self.email)
+
+        # Empty field
+        
         if duplicate_username:
-            self.errors.append('Error: your username is not unique')
+            self.errors.append('Error: username exists')
+        if duplicate_email:
+            self.errors.append('Error: email exists')
+        if self.username=='':
+            self.errors.append('Error: username not entered')
+        if self.email=='':
+            self.errors.append('Error: email not entered')
+        if self.password=='':
+            self.errors.append('Error: password not entered')
