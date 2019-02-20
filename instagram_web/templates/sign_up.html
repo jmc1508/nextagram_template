@@ -6,8 +6,7 @@
 <!-- Form: username -->
 <form action="{{url_for('create_new_user')}}" method="post">
     <input type="hidden" name="csrf_token" value="{{csrf_token()}}"/>
-<!-- <form>  -->
-<!-- <form> -->
+
     <div class="form-group ml-3 mr-3">
         <label for="username">Username:</label>
         <input name="username" class="form-control mb-2"/>
