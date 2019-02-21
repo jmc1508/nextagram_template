@@ -5,7 +5,7 @@ from models.base_model import db
 from models.user import User
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_wtf.csrf import CSRFProtect, CSRFError
-from flask_login import LoginManager, login_user
+from flask_login import LoginManager, login_user, login_required,logout_user
 
 web_dir = os.path.join(os.path.dirname(
     os.path.abspath(__file__)), 'instagram_web')
@@ -16,6 +16,9 @@ csrf=CSRFProtect(app)
 # # Add login manager
 login_manager=LoginManager()
 login_manager.init_app(app)
+login_manager.login_view = "sign_in"
+login_manager.login_message ='Testing 123'
+login_manager.login_message_category = "info"
 
 if os.getenv('FLASK_ENV') == 'production':
     app.config.from_object("config.ProductionConfig")
@@ -24,7 +27,6 @@ else:
 
 
 # Flask-Login user loader
-
 @login_manager.user_loader
 def load_user(id):
     # userid=int(userid)
@@ -40,7 +42,7 @@ def after_request(response):
     db.close()
     return response
 
-# View: Index
+# View: Index [app.py]
 @app.route("/")
 def index():
 
@@ -49,12 +51,11 @@ def index():
 
     return render_template('home.html')
 
-# View: New user
-@app.route("/users/new")
-def new_user():
+# View: New user [blueprint-users]
+# @app.route("/users/new")
+# def new_user():
 
-    return render_template('sign_up.html'  )
-
+#     return render_template('sign_up.html')
 
 # Create: New user
 @app.route("/users/", methods=['POST'])
@@ -74,7 +75,7 @@ def create_new_user():
     if user.save():
 
         flash('User successfuly signed up')
-        return redirect(url_for('check_sign_in'))
+        return redirect(url_for('sign_in'))
     else:
 
         return render_template('sign_up.html', errors=user.errors)
@@ -117,8 +118,9 @@ def check_sign_in():
 
 
 @app.route('/sign_out')
+@login_required
 def sign_out():
     # remove the username from the session if it's there
-    session.pop('username', None)
+    logout_user()
     flash("You have successfully logged out!")
     return redirect(url_for('index'))

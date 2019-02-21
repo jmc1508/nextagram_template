@@ -1,16 +1,16 @@
 from flask import Blueprint, render_template
 
 
-users_blueprint = Blueprint('users',
+sessions_blueprint = Blueprint('sessions',
                             __name__,
-                            template_folder='templates/')
+                            template_folder='templates/sessions')
 
 
 # Moved
 @users_blueprint.route('/new', methods=['GET'])
 def new():
     
-    return render_template('users/sign_up.html')
+    pass
 
 
 @users_blueprint.route('/', methods=['POST'])
@@ -25,7 +25,7 @@ def show(username):
 
 @users_blueprint.route('/', methods=["GET"])
 def index():
-    return "USERS"
+    return "SESSIONS"
 
 
 @users_blueprint.route('/<id>/edit', methods=['GET'])
