@@ -4,7 +4,7 @@
 <h2 class="ml-3">Sign In</h2>
 
 <!-- Form: Sign In -->
-<form action ="{{url_for('check_sign_in')}}" method='post'>
+<form action ="{{url_for('sessions.check_sign_in')}}" method='post'>
         <input type="hidden" name="csrf_token" value="{{csrf_token()}}"/>
 
         <button class="btn btn-primary ml-3" type="submit">Sign In With Google</button>

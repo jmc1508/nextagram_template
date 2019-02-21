@@ -10,6 +10,8 @@ sessions_blueprint = Blueprint('sessions',
                             template_folder='templates/')
 
 
+
+
 # Moved
 @sessions_blueprint.route('/new', methods=['GET'])
 def new():
@@ -40,3 +42,29 @@ def edit(id):
 @sessions_blueprint.route('/<id>', methods=['POST'])
 def update(id):
     pass
+
+@sessions_blueprint.route('/sign_in', methods=['POST'])
+def check_sign_in():
+
+    # Get username
+
+    user=User.get_or_none(User.username==request.form['username'])
+    
+    if user:
+        password_to_check=request.form['password']
+        result=check_password_hash(user.password,password_to_check)
+
+        if result:
+
+            user_login=User.get(User.username==request.form['username'])
+            login_user(user_login)
+            flash('Logged in successfully')
+            # Add in session key
+            return redirect(url_for("index"))
+        else:
+            flash('Error: Incorrect username or password')
+            return render_template('sign_in.html')
+    else:
+        flash('Error: Incorrect username or password')
+
+        return render_template('sign_in.html')
