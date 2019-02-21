@@ -51,10 +51,12 @@ def index():
 
 
 @users_blueprint.route('/<id>/edit', methods=['GET'])
-@login_required
+# @login_required
 def edit(id):
     print('Login needed')
-    pass
+    
+    return render_template('users/edit.html')
+
 
 
 @users_blueprint.route('/<id>', methods=['POST'])
