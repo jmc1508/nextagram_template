@@ -51,41 +51,6 @@ def index():
 
     return render_template('home.html')
 
-# View: New user [blueprint-users]
-# @app.route("/users/new")
-# def new_user():
-
-#     return render_template('sign_up.html')
-
-# Create: New user
-@app.route("/users/", methods=['POST'])
-def create_new_user():
-
-    # Get name,username,email, password
-    username=request.form['username']
-    email=request.form['email']
-    password=request.form['password']
- 
-    # Create new field in User table
-
-    user = User(username=username,email=email,password=password)
-
-    # Create error validation
-
-    if user.save():
-
-        flash('User successfuly signed up')
-        return redirect(url_for('sign_in'))
-    else:
-
-        return render_template('sign_up.html', errors=user.errors)
-
-
-# View: User Sign In
-@app.route("/sign_in")
-def sign_in():
-
-    return render_template('sign_in.html')
 
 # Check: User Sign In
 @app.route("/sign_in", methods=['POST'])
