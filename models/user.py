@@ -1,14 +1,28 @@
 from models.base_model import BaseModel
 import peewee as pw
 from werkzeug.security import generate_password_hash, check_password_hash
+from flask_login import UserMixin #JUST ADDED
 
 
 
-class User(BaseModel):
+class User(BaseModel,UserMixin): #UserMixin - package that adds in Flask-Login User attributes
     name = pw.CharField(unique=False, null=True)
     email=pw.CharField(max_length=128, unique=True)
     username=pw.CharField(max_length=128, unique=True, index=False)  #Index: search by username
     password=pw.CharField(max_length=128)
+
+    
+    # def is_authenticated(self):
+    #     return True
+
+    # def is_active(self):
+    #     return True
+
+    # def is_anonymous(self):
+    #     return False
+    
+    # def get_id(self):
+    #     return str(self.username)
 
     def validate(self):
         # Error Validation
@@ -39,3 +53,6 @@ class User(BaseModel):
             self.errors.append('Error: username not entered')
         if self.password=='':
             self.errors.append('Error: password not entered')
+
+
+    

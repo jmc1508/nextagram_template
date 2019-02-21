@@ -13,7 +13,7 @@ web_dir = os.path.join(os.path.dirname(
 app = Flask('NEXTAGRAM', root_path=web_dir)
 # Add CSRF
 csrf=CSRFProtect(app)
-# Add login manager
+# # Add login manager
 login_manager=LoginManager()
 login_manager.init_app(app)
 
@@ -23,10 +23,17 @@ else:
     app.config.from_object("config.DevelopmentConfig")
 
 
+# Flask-Login user loader
+
+@login_manager.user_loader
+def load_user(id):
+    # userid=int(userid)
+    return User.get_or_none(User.id==id)
+
+# Connect to DB
 @app.before_request
 def before_request():
     db.connect()
-
 
 @app.after_request
 def after_request(response):
@@ -67,7 +74,7 @@ def create_new_user():
     if user.save():
 
         flash('User successfuly signed up')
-        return redirect(url_for('new_user'))
+        return redirect(url_for('check_sign_in'))
     else:
 
         return render_template('sign_up.html', errors=user.errors)
@@ -77,7 +84,6 @@ def create_new_user():
 @app.route("/sign_in")
 def sign_in():
 
-
     return render_template('sign_in.html')
 
 # Check: User Sign In
@@ -85,20 +91,20 @@ def sign_in():
 def check_sign_in():
 
     # Get username
-    form_username=request.form['username']
 
-    user=User.get_or_none(User.username==form_username)
-
+    user=User.get_or_none(User.username==request.form['username'])
+    
     if user:
         password_to_check=request.form['password']
         result=check_password_hash(user.password,password_to_check)
 
         if result:
 
+            user_login=User.get(User.username==request.form['username'])
+            login_user(user_login)
             flash('Logged in successfully')
             # Add in session key
-            
-            session['username']=request.form['username']
+            # session['username']=request.form['username']
             return redirect(url_for("index"))
         else:
             flash('Error: Incorrect username or password')
@@ -107,9 +113,12 @@ def check_sign_in():
         flash('Error: Incorrect username or password')
 
         return render_template('sign_in.html')
- 
-@app.route('/logout')
-def logout():
+
+
+
+@app.route('/sign_out')
+def sign_out():
     # remove the username from the session if it's there
     session.pop('username', None)
+    flash("You have successfully logged out!")
     return redirect(url_for('index'))
