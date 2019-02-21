@@ -1,7 +1,7 @@
 from flask import Blueprint,  Flask, render_template, request,redirect,url_for,flash,session
 from models.user import User
 from models.base_model import db
-from flask_login import login_user, login_required
+from flask_login import login_user, login_required, current_user
 
 
 users_blueprint = Blueprint('users',
@@ -51,16 +51,27 @@ def index():
 
 
 @users_blueprint.route('/<id>/edit', methods=['GET'])
-# @login_required
+@login_required
 def edit(id):
+    user = User.get_by_id(id)
     
-    username=User.get_by_id(id).username
-    email=User.get_by_id(id).email
+    current_id=User.get(User.id==id).id
 
-    return render_template('users/edit.html',username=username,email=email)
+    # Conditions: If user is current_user, then proceed
 
+    if current_user==user:
+        print("Hooray")
+        username=User.get_by_id(id).username
+        email=User.get_by_id(id).email
+        return render_template('users/edit.html',username=username,email=email, id=id)
+        # pass
+    else:
 
+        pass
 
 @users_blueprint.route('/<id>', methods=['POST'])
 def update(id):
-    pass
+    # print('pass')
+    username=User.get_by_id(id).username
+    flash("Information Updated!")
+    return redirect(url_for('users.show', username=username))
