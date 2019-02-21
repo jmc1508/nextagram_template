@@ -4,6 +4,7 @@ from models.base_model import db
 from flask_login import login_user, login_required, current_user
 
 
+
 users_blueprint = Blueprint('users',
                             __name__,
                             template_folder='templates/')
@@ -64,7 +65,7 @@ def edit(id):
         return render_template('users/edit.html',username=username,email=email, id=id)
         # pass
     else:
-        # Enter logic to break
+        flash('Redirecting to your user profile')
         pass
 
 @users_blueprint.route('/<id>', methods=['POST'])
@@ -92,7 +93,7 @@ def update(id):
     if data_update:
         return redirect(url_for('users.edit',id=id))
     else:
-        flash('You have not updated any information')
+        flash('No changes made as you have not updated any information')
         return redirect(url_for('users.edit',id=id))
     
 
