@@ -4,12 +4,23 @@ from models.user import User
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_wtf.csrf import CSRFProtect, CSRFError
 from flask_login import LoginManager, login_user, login_required,logout_user
+from app import app
 
 sessions_blueprint = Blueprint('sessions',
                             __name__,
                             template_folder='templates/')
 
+# # Add login manager
+login_manager=LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = "sign_in"
+login_manager.login_message ='Testing 123'
+login_manager.login_message_category = "info"
 
+# # Flask-Login user loader
+@login_manager.user_loader
+def load_user(id):
+    return User.get_or_none(User.id==id)
 
 
 # Moved
@@ -17,7 +28,6 @@ sessions_blueprint = Blueprint('sessions',
 def new():
     
     pass
-
 
 @sessions_blueprint.route('/', methods=['POST'])
 def create():
@@ -28,7 +38,6 @@ def create():
 def show(username):
     pass
 
-#Moved successfully
 @sessions_blueprint.route('/sign_in', methods=["GET"])
 def index():
 
@@ -60,7 +69,7 @@ def check_sign_in():
             login_user(user_login)
             flash('Logged in successfully')
             # Add in session key
-            return redirect(url_for("index"))
+            return redirect(url_for("users.index"))
         else:
             flash('Error: Incorrect username or password')
             return render_template('sign_in.html')
@@ -68,3 +77,11 @@ def check_sign_in():
         flash('Error: Incorrect username or password')
 
         return render_template('sign_in.html')
+
+@sessions_blueprint.route('/sign_out')
+@login_required
+def sign_out():
+
+    logout_user()
+    flash("You have successfully logged out!")
+    return redirect(url_for('index'))

@@ -6,12 +6,23 @@ from instagram_web.blueprints.images.views import images_blueprint
 from flask_assets import Environment, Bundle
 from .util.assets import bundles
 
+from flask_login import LoginManager, login_user, login_required,logout_user
+from flask_wtf.csrf import CSRFProtect, CSRFError
+
 assets = Environment(app)
 assets.register(bundles)
 
 app.register_blueprint(users_blueprint, url_prefix="/users")
 app.register_blueprint(sessions_blueprint, url_prefix="/sessions")
 app.register_blueprint(images_blueprint, url_prefix="/images")
+
+
+# Add CSRF
+csrf=CSRFProtect(app)
+
+
+
+
 
 
 @app.errorhandler(500)

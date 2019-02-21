@@ -1,10 +1,6 @@
 from flask import Blueprint,  Flask, render_template, request,redirect,url_for,flash,session
 from models.user import User
 from models.base_model import db
-from werkzeug.security import generate_password_hash, check_password_hash
-from flask_wtf.csrf import CSRFProtect, CSRFError
-from flask_login import LoginManager, login_user, login_required,logout_user
-
 
 users_blueprint = Blueprint('users',
                             __name__,
@@ -34,7 +30,7 @@ def create():
     if user.save():
 
         flash('User successfuly signed up')
-        return redirect(url_for('sessions.index'))
+        return redirect(url_for('users.show',username=username))
     else:
 
         return render_template('users/sign_up.html', errors=user.errors)
@@ -42,8 +38,8 @@ def create():
 
 @users_blueprint.route('/<username>', methods=["GET"])
 def show(username):
-    pass
-
+    
+    return "USERS"
 
 @users_blueprint.route('/', methods=["GET"])
 def index():
