@@ -39,7 +39,6 @@ def create():
 
         return render_template('users/sign_up.html', errors=user.errors)
 
-
 @users_blueprint.route('/<username>', methods=["GET"])
 def show(username):
     print('YOU ARE HERE')
@@ -60,18 +59,44 @@ def edit(id):
     # Conditions: If user is current_user, then proceed
 
     if current_user==user:
-        print("Hooray")
         username=User.get_by_id(id).username
         email=User.get_by_id(id).email
         return render_template('users/edit.html',username=username,email=email, id=id)
         # pass
     else:
-
+        # Enter logic to break
         pass
 
 @users_blueprint.route('/<id>', methods=['POST'])
 def update(id):
-    # print('pass')
-    username=User.get_by_id(id).username
-    flash("Information Updated!")
-    return redirect(url_for('users.show', username=username))
+    
+    data_update=False
+    # Form data
+    username_form=request.form['username']
+    email_form=request.form['email']
+
+    # If no username duplicates - update
+    if User.get_or_none(User.username==username_form) is None:
+        query=User.update(username=username_form).where(User.id==id)
+        query.execute()
+        data_update=True
+        flash('Username updated')
+    # # If no email duplicates - update
+    if User.get_or_none(User.email==email_form) is None:
+        query=User.update(email=email_form).where(User.id==id)
+        data_update=True
+        query.execute()
+        flash('Email updated')
+    
+    # Check if there are updates
+    if data_update:
+        return redirect(url_for('users.edit',id=id))
+    else:
+        flash('You have not updated any information')
+        return redirect(url_for('users.edit',id=id))
+    
+
+
+    
+    
+    

@@ -6,8 +6,6 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_wtf.csrf import CSRFProtect, CSRFError
 from flask_login import LoginManager, login_user, login_required,logout_user
 
-# from instagram_web import login_manager
-
 sessions_blueprint = Blueprint('sessions',
                             __name__,
                             template_folder='templates/')
@@ -64,11 +62,11 @@ def check_sign_in():
             return redirect(url_for("users.show",username=request.form['username']))
         else:
             flash('Error: Incorrect username or password')
-            return render_template('sign_in.html')
+            return render_template('sessions/sign_in.html')
     else:
         flash('Error: Incorrect username or password')
 
-        return render_template('sign_in.html')
+        return render_template('sessions/sign_in.html')
 
 @sessions_blueprint.route('/sign_out')
 @login_required

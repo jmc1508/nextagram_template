@@ -11,19 +11,6 @@ class User(BaseModel,UserMixin): #UserMixin - package that adds in Flask-Login U
     username=pw.CharField(max_length=128, unique=True, index=False)  #Index: search by username
     password=pw.CharField(max_length=128)
 
-    
-    # def is_authenticated(self):
-    #     return True
-
-    # def is_active(self):
-    #     return True
-
-    # def is_anonymous(self):
-    #     return False
-    
-    # def get_id(self):
-    #     return str(self.username)
-
     def validate(self):
         # Error Validation
 
