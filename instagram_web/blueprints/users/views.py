@@ -53,9 +53,11 @@ def index():
 @users_blueprint.route('/<id>/edit', methods=['GET'])
 # @login_required
 def edit(id):
-    print('Login needed')
     
-    return render_template('users/edit.html')
+    username=User.get_by_id(id).username
+    email=User.get_by_id(id).email
+
+    return render_template('users/edit.html',username=username,email=email)
 
 
 
