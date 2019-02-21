@@ -9,6 +9,8 @@ from .util.assets import bundles
 from flask_login import LoginManager, login_user, login_required,logout_user
 from flask_wtf.csrf import CSRFProtect, CSRFError
 
+from models.user import User
+
 assets = Environment(app)
 assets.register(bundles)
 
@@ -20,9 +22,17 @@ app.register_blueprint(images_blueprint, url_prefix="/images")
 # Add CSRF
 csrf=CSRFProtect(app)
 
+# # Add login manager
+login_manager=LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = "sign_in"
+login_manager.login_message ='Testing 123'
+login_manager.login_message_category = "info"
 
-
-
+# # Flask-Login user loader
+@login_manager.user_loader
+def load_user(id):
+    return User.get_or_none(User.id==id)
 
 
 @app.errorhandler(500)

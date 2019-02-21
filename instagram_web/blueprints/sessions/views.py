@@ -6,21 +6,12 @@ from flask_wtf.csrf import CSRFProtect, CSRFError
 from flask_login import LoginManager, login_user, login_required,logout_user
 from app import app
 
+# from instagram_web import login_manager
+
 sessions_blueprint = Blueprint('sessions',
                             __name__,
                             template_folder='templates/')
 
-# # Add login manager
-login_manager=LoginManager()
-login_manager.init_app(app)
-login_manager.login_view = "sign_in"
-login_manager.login_message ='Testing 123'
-login_manager.login_message_category = "info"
-
-# # Flask-Login user loader
-@login_manager.user_loader
-def load_user(id):
-    return User.get_or_none(User.id==id)
 
 
 # Moved
@@ -69,7 +60,7 @@ def check_sign_in():
             login_user(user_login)
             flash('Logged in successfully')
             # Add in session key
-            return redirect(url_for("users.index"))
+            return redirect(url_for("users.show",username=request.form['username']))
         else:
             flash('Error: Incorrect username or password')
             return render_template('sign_in.html')

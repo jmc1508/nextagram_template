@@ -3,9 +3,6 @@ import config
 from flask import Flask, render_template, request,redirect,url_for,flash,session
 from models.base_model import db
 from models.user import User
-# from werkzeug.security import generate_password_hash, check_password_hash
-# from flask_wtf.csrf import CSRFProtect, CSRFError
-from flask_login import LoginManager, login_user, login_required,logout_user
 
 web_dir = os.path.join(os.path.dirname(
     os.path.abspath(__file__)), 'instagram_web')

@@ -2,6 +2,8 @@ from flask import Blueprint,  Flask, render_template, request,redirect,url_for,f
 from models.user import User
 from models.base_model import db
 
+from flask_login import login_user
+
 users_blueprint = Blueprint('users',
                             __name__,
                             template_folder='templates/')
@@ -30,6 +32,8 @@ def create():
     if user.save():
 
         flash('User successfuly signed up')
+        # Before redirect, login the user using Flask-Login
+        login_user(user)
         return redirect(url_for('users.show',username=username))
     else:
 
@@ -38,8 +42,8 @@ def create():
 
 @users_blueprint.route('/<username>', methods=["GET"])
 def show(username):
-    
-    return "USERS"
+    print('YOU ARE HERE')
+    return render_template('home.html')
 
 @users_blueprint.route('/', methods=["GET"])
 def index():
