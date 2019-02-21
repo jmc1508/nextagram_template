@@ -1,8 +1,8 @@
 from flask import Blueprint,  Flask, render_template, request,redirect,url_for,flash,session
 from models.user import User
 from models.base_model import db
-
 from flask_login import login_user
+
 
 users_blueprint = Blueprint('users',
                             __name__,

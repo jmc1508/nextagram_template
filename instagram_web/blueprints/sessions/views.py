@@ -1,10 +1,10 @@
+from app import app
 from flask import Blueprint, render_template, Flask, request,redirect,url_for,flash,session
 from models.base_model import db
 from models.user import User
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_wtf.csrf import CSRFProtect, CSRFError
 from flask_login import LoginManager, login_user, login_required,logout_user
-from app import app
 
 # from instagram_web import login_manager
 
@@ -57,6 +57,7 @@ def check_sign_in():
         if result:
 
             user_login=User.get(User.username==request.form['username'])
+            # Flask-login - login the user
             login_user(user_login)
             flash('Logged in successfully')
             # Add in session key

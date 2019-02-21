@@ -34,3 +34,8 @@ def index():
 
     return render_template('home.html')
 
+@app.errorhandler(404)
+def page_not_found(e):
+    print('Run')
+    # note that we set the 404 status explicitly
+    return render_template('404.html')
