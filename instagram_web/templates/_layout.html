@@ -20,7 +20,7 @@
   <body>
     <!-- Bootstrap - Navbar -->
     <nav class="navbar navbar-expand-md bg-light navbar-light">
-        <a class="navbar-brand" href="#">
+        <a class="navbar-brand" href="/">
             <img src="../static/logo_nextagram.jpg" >
             Nextagram</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,7 +34,7 @@
                 <button class="btn btn-outline-success my-2" type="submit">Search</button>
             </form>
             <div class ="navbar-nav ml-3">
-                <a class="nav-item nav-link active">Users</a>
+                <a class="nav-item nav-link active" href="">Users</a>
                 {%if current_user.is_authenticated%}
                   <a class="nav-item nav-link active" href="/sessions/sign_out">Sign Out</a>
                 {%else%}

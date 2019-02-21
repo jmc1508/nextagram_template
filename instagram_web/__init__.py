@@ -25,9 +25,8 @@ csrf=CSRFProtect(app)
 # # Add login manager
 login_manager=LoginManager()
 login_manager.init_app(app)
-login_manager.login_view = "sign_in"
-login_manager.login_message ='Testing 123'
-login_manager.login_message_category = "info"
+login_manager.login_view = "home"
+login_manager.login_message ="Error: You need to be logged in to view this page"
 
 # # Flask-Login user loader
 @login_manager.user_loader

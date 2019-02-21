@@ -1,7 +1,7 @@
 from flask import Blueprint,  Flask, render_template, request,redirect,url_for,flash,session
 from models.user import User
 from models.base_model import db
-from flask_login import login_user
+from flask_login import login_user, login_required
 
 
 users_blueprint = Blueprint('users',
@@ -51,7 +51,9 @@ def index():
 
 
 @users_blueprint.route('/<id>/edit', methods=['GET'])
+@login_required
 def edit(id):
+    print('Login needed')
     pass
 
 
