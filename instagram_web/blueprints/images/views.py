@@ -1,5 +1,5 @@
-from flask import Blueprint, render_template
-
+from flask import Blueprint, render_template, request, redirect
+# from helpers import *    #Where to put this?
 
 images_blueprint = Blueprint('images',
                             __name__,
@@ -31,6 +31,10 @@ def edit(id):
     pass
 
 
+# From users-> edit.html -> profile image upload
 @images_blueprint.route('/<id>', methods=['POST'])
 def update(id):
-    pass
+
+    
+
+    return "PASS"

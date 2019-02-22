@@ -2,6 +2,7 @@ from flask import Blueprint,  Flask, render_template, request,redirect,url_for,f
 from models.user import User
 from models.base_model import db
 from flask_login import login_user, login_required, current_user
+from instagram_web.util.upload import *
 
 
 
@@ -10,12 +11,10 @@ users_blueprint = Blueprint('users',
                             template_folder='templates/')
 
 
-# Moved
 @users_blueprint.route('/new', methods=['GET'])
 def new():
     
     return render_template('users/sign_up.html')
-
 
 @users_blueprint.route('/', methods=['POST'])
 def create():
@@ -53,49 +52,37 @@ def index():
 @users_blueprint.route('/<id>/edit', methods=['GET'])
 @login_required
 def edit(id):
-    user = User.get_by_id(id)
-    
-    current_id=User.get(User.id==id).id
+    user = User.get_or_none(User.id==id)
 
-    # Conditions: If user is current_user, then proceed
+    # Conditions: If user is current_user, then proceed. Else flash message go to to sign-in page
 
     if current_user==user:
-        username=User.get_by_id(id).username
-        email=User.get_by_id(id).email
-        return render_template('users/edit.html',username=username,email=email, id=id)
-        # pass
+        return render_template('users/edit.html')
     else:
         flash('Error: You are not authorised to edit another profile')
         return render_template('sessions/sign_in.html')
 
-@users_blueprint.route('/<id>', methods=['POST'])
+@users_blueprint.route('/<int:id>', methods=['POST'])
 def update(id):
     
-    data_update=False
-    # Form data
     username_form=request.form['username']
     email_form=request.form['email']
+    password_form=request.form.get('password')
 
-    # If no username duplicates - update
-    if User.get_or_none(User.username==username_form) is None:
-        query=User.update(username=username_form).where(User.id==id)
-        query.execute()
-        data_update=True
-        flash('Username updated')
-    # # If no email duplicates - update
-    if User.get_or_none(User.email==email_form) is None:
-        query=User.update(email=email_form).where(User.id==id)
-        data_update=True
-        query.execute()
-        flash('Email updated')
+    user= User.get_by_id(id)
     
-    # Check if there are updates
-    if data_update:
+    user.username=username_form
+    user.email=email_form
+
+    if password_form:
+        user.password=password_form
+
+    if user.save():
+        flash('User data updated')
         return redirect(url_for('users.edit',id=id))
     else:
-        flash('No changes made as you have not updated any information')
-        return redirect(url_for('users.edit',id=id))
-    
+        return render_template('/users/edit.html',errors=user.errors)
+
 
 
     

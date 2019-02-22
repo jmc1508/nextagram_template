@@ -16,16 +16,23 @@ class User(BaseModel,UserMixin): #UserMixin - package that adds in Flask-Login U
 
         duplicate_username=User.get_or_none(User.username==self.username)
         duplicate_email=User.get_or_none(User.email==self.email)
-        if len(self.password)<8 or len(self.password)>15:
-            self.errors.append('Error: password must be 8 & 15')
+        
+
+
+        if len(self.password)==93:
+            pass
+            # We know that password has not been changed as it is length of hashed passwrod
         else:
-            self.password=generate_password_hash(self.password)
+
+            if len(self.password)<8 or len(self.password)>15:
+                self.errors.append('Error: password must be 8 & 15')
+            else:
+                self.password=generate_password_hash(self.password)
 
         # Empty field
-        
-        if duplicate_username:
+        if duplicate_username and duplicate_username.username != User.get_by_id(self.id).username:
             self.errors.append('Error: username exists')
-        if duplicate_email:
+        if duplicate_email and duplicate_email.email != User.get_by_id(self.id).email:
             self.errors.append('Error: email exists')
         if self.username=='':
             self.errors.append('Error: username not entered')

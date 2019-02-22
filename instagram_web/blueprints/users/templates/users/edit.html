@@ -4,17 +4,20 @@
 <h2 class="ml-3">Edit Profile</h2>
 
 <!-- Form: Edit -->
-<form action="{{url_for('users.update', id = id)}}" method="post">
+<form action="{{url_for('users.update', id = current_user.id)}}" method="post">
         <input type="hidden" name="csrf_token" value="{{csrf_token()}}"/>
     
         <div class="form-group ml-3 mr-3">
 
             <label for="username">Username:</label>
-            <input value={{username}} name="username" class="form-control mb-2" />
+            <input value={{current_user.username}} name="username" class="form-control mb-2" />
             
             <label for="email">Email:</label>
-            <input value={{email}} name="email" class="form-control mb-2" />
+            <input type="email" value={{current_user.email}} name="email" class="form-control mb-2" />
             
+            <label for="password">Password:</label>
+            <input type="password" name="password" class="form-control mb-2" />
+
         </div>
         <button class="btn btn-primary ml-3" type="submit">Update Information</button>
     </form>
@@ -25,17 +28,16 @@
 
     <div class="row">
         <div class="col-3">
-            <img src="/instagram_web/static/placeholder_profile_photo.jpg"/>
+            <img class ="ml-3 img-fluid" src="/static/images/placeholder_profile_photo.jpg"/>
         </div>
 
         <div class="col-9">
-            <form method="POST" enctype="multipart/form-data">
+            <form action="{{url_for('images.update', id=current_user.id)}}" method="POST" enctype="multipart/form-data">
+                <input type="hidden" name="csrf_token" value="{{csrf_token()}}"/>
                 <input type="file" name="profile_image" >
                 <button type="submit" class="btn btn-primary">Upload File</button>
             </form>
         </div>
-
-
     </div>
 
 {% endblock %}

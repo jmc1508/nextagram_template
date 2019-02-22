@@ -19,6 +19,7 @@ app.register_blueprint(sessions_blueprint, url_prefix="/sessions")
 app.register_blueprint(images_blueprint, url_prefix="/images")
 
 
+
 # Add CSRF
 csrf=CSRFProtect(app)
 
@@ -27,6 +28,9 @@ login_manager=LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = "home"
 login_manager.login_message ="Error: You need to be logged in to view this page"
+
+#Flask s3 Upload
+# app.config.from_object("flask_s3_upload.config")
 
 # # Flask-Login user loader
 @login_manager.user_loader
