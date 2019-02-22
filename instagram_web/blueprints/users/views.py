@@ -2,7 +2,7 @@ from flask import Blueprint,  Flask, render_template, request,redirect,url_for,f
 from models.user import User
 from models.base_model import db
 from flask_login import login_user, login_required, current_user
-from instagram_web.util.upload import *
+
 
 
 
