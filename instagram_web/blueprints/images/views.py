@@ -6,7 +6,6 @@ images_blueprint = Blueprint('images',
                             template_folder='templates/')
 
 
-# Moved
 @images_blueprint.route('/new', methods=['GET'])
 def new():
     
@@ -22,7 +21,6 @@ def create():
 def show(username):
     pass
 
-#Moved
 @images_blueprint.route('/', methods=["GET"])
 def index():
 

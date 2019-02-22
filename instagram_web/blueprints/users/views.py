@@ -65,8 +65,8 @@ def edit(id):
         return render_template('users/edit.html',username=username,email=email, id=id)
         # pass
     else:
-        flash('Redirecting to your user profile')
-        pass
+        flash('Error: You are not authorised to edit another profile')
+        return render_template('sessions/sign_in.html')
 
 @users_blueprint.route('/<id>', methods=['POST'])
 def update(id):
