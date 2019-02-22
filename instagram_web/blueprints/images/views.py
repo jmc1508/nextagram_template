@@ -1,8 +1,10 @@
 from app import app
-from flask import Blueprint, render_template, request, redirect
+from flask import Blueprint, render_template, request, redirect, url_for, flash
 from instagram_web.util.upload import upload_file_to_s3, allowed_file
-# from werkzeug.security import secure_filename
+
 from werkzeug import secure_filename
+
+from models.user import User
 
 
 images_blueprint = Blueprint('images',
@@ -56,8 +58,13 @@ def update(id):
         print('We get to here now')
         file.filename = secure_filename(file.filename)
         output   	  = upload_file_to_s3(file, app.config["S3_BUCKET"])
-        
-        return str(output)
+    
+        user=User.get_by_id(id)
+        user.profile_photo=output
+
+        user.save()
+        flash('Profile photo updated')
+        return redirect(url_for('users.edit',id=id))
 
     else:
-        return redirect("home.html")
+        return render_template("home.html")
