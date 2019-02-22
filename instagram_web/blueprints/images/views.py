@@ -56,6 +56,7 @@ def update(id):
         print('We get to here now')
         file.filename = secure_filename(file.filename)
         output   	  = upload_file_to_s3(file, app.config["S3_BUCKET"])
+        
         return str(output)
 
     else:
