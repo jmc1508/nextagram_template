@@ -1,0 +1,29 @@
+<!-- User profile -->
+
+{% extends "_layout.html" %}
+{% block content %}
+
+
+<!-- User's photo library -->
+<div class ="ml-4 mt-4">
+    <div class="row">
+        <div class="col-6">
+            <h2>Welcome @{{user.username}}</h2>
+            <img class ="ml-3 img-fluid" src="{{user.profile_photo_url}}"/>
+        </div>
+        <!-- Conditonal: if user is authenticated and url is that username,allow submit button -->
+        {%if current_user.is_authenticated and current_user.username ==user.username%}    
+            <div class="col-6">
+                <form action="{{url_for('images.update_image_library',username=current_user.username, id=current_user.id)}}" method="POST" enctype="multipart/form-data">
+                    <input type="hidden" name="csrf_token" value="{{csrf_token()}}"/>
+                    <input type="file" name="image_gallery" >
+                    <button type="submit" class="btn btn-primary">Post Photo</button>
+                </form>
+            </div>
+        {%else%}
+            <!-- Do not display the submit -->
+        {%endif%}
+    </div>
+    
+</div>
+{%endblock%}

@@ -41,19 +41,20 @@ def create():
 
 @users_blueprint.route('/<username>', methods=["GET"])
 def show(username):
-    print('YOU ARE HERE')
-    # We want to render to redirect to another template with username
-    return render_template('home.html')
+    # Get user object
+    user=User.get_or_none(User.username==username)
+
+    return render_template('users/profile.html', user = user)
 
 @users_blueprint.route('/', methods=["GET"])
 def index():
     return "USERS"
 
 
-@users_blueprint.route('/<id>/edit', methods=['GET'])
-@login_required
+@users_blueprint.route('/<int:id>/edit', methods=['GET'])
+# @login_required
 def edit(id):
-    user = User.get_or_none(User.id==id)
+    user = User.get_by_id(User.id==id)
 
     # Conditions: If user is current_user, then proceed. Else flash message go to to sign-in page
 
@@ -83,6 +84,7 @@ def update(id):
         return redirect(url_for('users.edit',id=id))
     else:
         return render_template('/users/edit.html',errors=user.errors)
+
 
 
 

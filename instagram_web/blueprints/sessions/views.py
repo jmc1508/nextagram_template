@@ -27,11 +27,9 @@ def create():
 @login_required
 def show(username):
 
-    user=User.get_or_none(User.username==username)
-    profile_photo_url=user.profile_photo_url
-    
-    # breakpoint()
-    return render_template('/sessions/profile.html')
+
+
+    pass
 
 @sessions_blueprint.route('/sign_in', methods=["GET"])
 def index():
@@ -65,7 +63,7 @@ def check_sign_in():
             login_user(user_login)
             flash('Logged in successfully')
             # Add in session key
-            return redirect(url_for("sessions.show",username=request.form['username']))
+            return redirect(url_for("users.show",username=request.form['username']))
         else:
             flash('Error: Incorrect username or password')
             return render_template('sessions/sign_in.html')

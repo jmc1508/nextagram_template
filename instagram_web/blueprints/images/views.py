@@ -4,7 +4,8 @@ from instagram_web.util.upload import upload_file_to_s3, allowed_file
 
 from werkzeug import secure_filename
 
-from models.user import User
+from models.user import User, Image
+from flask_login import login_required, current_user
 
 
 images_blueprint = Blueprint('images',
@@ -38,11 +39,11 @@ def edit(id):
 
 
 # From users-> edit.html -> profile image upload
-@images_blueprint.route('/<id>', methods=['POST'])
-
-# @profile_photo_url
+@images_blueprint.route('/<int:id>', methods=['POST'])
+@login_required
+# Update user's profile photo
 def update(id):
-    
+
     # A
     if "profile_image" not in request.files:
         return "No user_file key in request.files"
@@ -65,8 +66,43 @@ def update(id):
         user.profile_photo_path=file.filename
         
         user.save()
-        flash('Profile photo updated')
+        flash('Photo added to gallery')
         return redirect(url_for('users.edit',id=id))
 
     else:
         return render_template("home.html")
+
+# Edit user's image library
+# Can use current_user as will only come here if logged in
+@images_blueprint.route('/<username>',methods=['POST'])
+@login_required
+def update_image_library(username):
+
+      # A
+    if "image_gallery" not in request.files:
+        
+        return "No user_file key in request.files"
+
+	# B
+    file    = request.files["image_gallery"]
+    print(file)
+
+	# C.
+    if file.filename == "":
+        return "Please select a file"
+
+	# D.
+    if file and allowed_file(file.filename):
+
+        file.filename = secure_filename(file.filename)
+        output   	  = upload_file_to_s3(file, app.config["S3_BUCKET"])
+
+        # Add image path to database
+        Image.create(user_id=current_user.id, user_image_path=file.filename )
+        flash('Profile photo updated')
+        return redirect(url_for('users.show',username=username))
+
+    else:
+        return render_template("home.html")
+    
+ 
