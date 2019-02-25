@@ -49,11 +49,17 @@
 <!-- Flash message -->
   {% with messages = get_flashed_messages() %}
     {% if messages %}
-      <ul class=flashes>
+      <!-- <ul class=flashes> -->
       {% for message in messages %}
-        <li>{{ message }}</li>
+        <!-- <li>{{ message }}</li> -->
+        <div class="alert alert-success ml-4 mr-4">
+          {{message}}
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+
+        </div>
       {% endfor %}
-      </ul>
+      <!-- </ul> -->
     {% endif %}
   {% endwith %}
 

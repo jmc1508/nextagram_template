@@ -18,7 +18,7 @@ class User(BaseModel,UserMixin): #UserMixin - package that adds in Flask-Login U
     username=pw.CharField(max_length=128, unique=True, index=False)  #Index: search by username
     password=pw.CharField(max_length=128)
     profile_photo_path=pw.CharField(max_length=255,null=True, default="https://s3-ap-southeast-1.amazonaws.com/nextagram-clone-jmc/placeholder_profile_photo.jpg")
-
+    private=pw.BooleanField(default=True)
 
 
     def validate(self):
@@ -64,7 +64,14 @@ class User(BaseModel,UserMixin): #UserMixin - package that adds in Flask-Login U
         # Refer to config.py for definitions - not directly from .env
         return f'{app.config["S3_LOCATION"]}{self.profile_photo_path}'
 
+
 class Image(BaseModel):
     # Fields
     user=pw.ForeignKeyField(User,backref="images")
     user_image_path=pw.CharField(max_length=255, null=True)
+
+    # Hybrid property
+    @hybrid_property
+    def gallery_photo_url(self):
+        # Refer to config.py for definitions - not directly from .env
+        return f'{app.config["S3_LOCATION"]}{self.user_image_path}'

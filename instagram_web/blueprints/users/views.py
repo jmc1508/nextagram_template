@@ -44,7 +44,11 @@ def show(username):
     # Get user object
     user=User.get_or_none(User.username==username)
 
-    return render_template('users/profile.html', user = user)
+    # Get list of images related to this user using the backref
+    user_images=user.images
+  
+    
+    return render_template('users/profile.html', user = user,user_images=user_images)
 
 @users_blueprint.route('/', methods=["GET"])
 def index():
@@ -54,8 +58,8 @@ def index():
 @users_blueprint.route('/<int:id>/edit', methods=['GET'])
 # @login_required
 def edit(id):
-    user = User.get_by_id(User.id==id)
-
+    user = User.get_or_none(User.id==id)
+    
     # Conditions: If user is current_user, then proceed. Else flash message go to to sign-in page
 
     if current_user==user:
