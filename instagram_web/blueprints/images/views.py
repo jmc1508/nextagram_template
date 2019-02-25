@@ -44,7 +44,7 @@ def edit(id):
 # Update user's profile photo
 def update(id):
 
-    # A
+    # A: Check if there is file in form
     if "profile_image" not in request.files:
         return "No user_file key in request.files"
 

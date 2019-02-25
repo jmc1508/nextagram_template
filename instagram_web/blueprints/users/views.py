@@ -75,14 +75,20 @@ def update(id):
     email_form=request.form['email']
     password_form=request.form.get('password')
 
+    private_form=request.form.getlist('private')
+
     user= User.get_by_id(id)
     
     user.username=username_form
     user.email=email_form
 
+    
+    breakpoint()
+
+    # If password has been amended, change it
     if password_form:
         user.password=password_form
-
+    # Invoke save() function to do validation
     if user.save():
         flash('User data updated')
         return redirect(url_for('users.edit',id=id))

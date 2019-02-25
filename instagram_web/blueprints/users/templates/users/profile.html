@@ -5,11 +5,11 @@
 
 
 <!-- Profile Photo -->
-<div class ="ml-4 mt-4">
+<div class ="ml-4 mt-4 container-fluid">
     <div class="row">
         <div class="col-6">
             <h2>Welcome @{{user.username}}</h2>
-            <img class ="ml-3 img-fluid" src="{{user.profile_photo_url}}"/>
+            <img class ="ml-3 img-fluid img-circle" src="{{user.profile_photo_url}}"/>
         </div>
         <!-- Conditonal: if user is authenticated and url is that username,allow submit button -->
         {%if current_user.is_authenticated and current_user.username ==user.username%}    
@@ -26,8 +26,8 @@
     </div> 
 </div>
 <!-- Gallery of Images -->
-<div class="ml-4">
-    <h2>@{{user.username}}'s Gallery</h2>
+<div class="mt-4 container-fluid ml-4">
+    <!-- <h2>@{{user.username}}'s Gallery</h2> -->
     <!-- Condition: if private setting is true, do not display -->
     {%if user.private==True %}    
         <div>Private profile</div>
@@ -35,8 +35,9 @@
         <div class="row">
             <!-- Display photos -->
             {%for image in user_images%}
-                <!-- <li>{{image.gallery_photo_url}}</li> -->
-                <img src="{{image.gallery_photo_url}}"/>
+                <div class="col-sm-4 mb-2 text-center">
+                    <img class="img-fluid" src="{{image.gallery_photo_url}}"/>
+                </div>    
             {%endfor%}
         </div> 
     {%endif%}
