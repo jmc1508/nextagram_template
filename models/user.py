@@ -1,7 +1,14 @@
+
 from models.base_model import BaseModel
 import peewee as pw
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin #JUST ADDED
+
+# Import app
+from app import app
+
+# Hybrid property import
+from playhouse.hybrid import hybrid_property
 
 
 
@@ -10,8 +17,9 @@ class User(BaseModel,UserMixin): #UserMixin - package that adds in Flask-Login U
     email=pw.CharField(max_length=128, unique=True)
     username=pw.CharField(max_length=128, unique=True, index=False)  #Index: search by username
     password=pw.CharField(max_length=128)
-    # profile_photo_url = pw.CharField(max_length=255, null=True, default="https://s3-ap-southeast-1.amazonaws.com/nextagram-clone-jmc/placeholder_profile_photo.jpg")
     profile_photo_path=pw.CharField(max_length=255,null=True, default="https://s3-ap-southeast-1.amazonaws.com/nextagram-clone-jmc/placeholder_profile_photo.jpg")
+
+
 
     def validate(self):
         # Error Validation
@@ -50,5 +58,8 @@ class User(BaseModel,UserMixin): #UserMixin - package that adds in Flask-Login U
         if self.password=='':
             self.errors.append('Error: password not entered')
 
-
-    
+    # Hybrid property
+    @hybrid_property
+    def profile_photo_url(self):
+        # Refer to config.py for definitions - not directly from .env
+        return f'{app.config["S3_LOCATION"]}{self.profile_photo_path}'

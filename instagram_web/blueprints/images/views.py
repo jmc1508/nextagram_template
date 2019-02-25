@@ -39,6 +39,8 @@ def edit(id):
 
 # From users-> edit.html -> profile image upload
 @images_blueprint.route('/<id>', methods=['POST'])
+
+# @profile_photo_url
 def update(id):
     
     # A
@@ -55,15 +57,13 @@ def update(id):
 
 	# D.
     if file and allowed_file(file.filename):
-        # print('We get to here now')
+
         file.filename = secure_filename(file.filename)
         output   	  = upload_file_to_s3(file, app.config["S3_BUCKET"])
-    
-    
-        breakpoint()
-        user=User.get_by_id(id)
-        user.profile_photo_url=output
 
+        user=User.get_by_id(id)
+        user.profile_photo_path=file.filename
+        breakpoint()
         user.save()
         flash('Profile photo updated')
         return redirect(url_for('users.edit',id=id))
