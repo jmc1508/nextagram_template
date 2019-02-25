@@ -63,7 +63,7 @@ def update(id):
 
         user=User.get_by_id(id)
         user.profile_photo_path=file.filename
-        breakpoint()
+        
         user.save()
         flash('Profile photo updated')
         return redirect(url_for('users.edit',id=id))

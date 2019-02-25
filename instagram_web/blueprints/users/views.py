@@ -42,6 +42,7 @@ def create():
 @users_blueprint.route('/<username>', methods=["GET"])
 def show(username):
     print('YOU ARE HERE')
+    # We want to render to redirect to another template with username
     return render_template('home.html')
 
 @users_blueprint.route('/', methods=["GET"])

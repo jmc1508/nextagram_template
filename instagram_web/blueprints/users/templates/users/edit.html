@@ -4,7 +4,7 @@
 <h2 class="ml-3">Edit Profile</h2>
 
 <!-- Form: Edit -->
-<form action="{{url_for('users.update', id = current_user.id)}}" method="post">
+    <form action="{{url_for('users.update', id = current_user.id)}}" method="post">
         <input type="hidden" name="csrf_token" value="{{csrf_token()}}"/>
     
         <div class="form-group ml-3 mr-3">
@@ -28,8 +28,8 @@
 
     <div class="row">
         <div class="col-3">
-            <!-- <img class ="ml-3 img-fluid" src="{{current_user.profile_photo_url}}"/> -->
-            <img class ="ml-3 img-fluid" src="/static/images/placeholder_profile_photo.jpg"/>
+            <img class ="ml-3 img-fluid" src="{{current_user.profile_photo_url}}"/>
+            <!-- <img class ="ml-3 img-fluid" src="/static/images/placeholder_profile_photo.jpg"/> -->
 
         </div>
 
