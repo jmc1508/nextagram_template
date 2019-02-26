@@ -4,45 +4,47 @@
 <h2 class="ml-3">Edit Profile</h2>
 
 <!-- Form: Edit -->
-    <form action="{{url_for('users.update', id = current_user.id)}}" method="post">
-        <input type="hidden" name="csrf_token" value="{{csrf_token()}}"/>
+<form action="{{url_for('users.update', id = current_user.id)}}" method="post">
+    <input type="hidden" name="csrf_token" value="{{csrf_token()}}"/>
     
-        <div class="form-group ml-3 mr-3">
+    <div class="form-group ml-3 mr-3">
+        
+        <label for="username">Username:</label>
+        <input value={{current_user.username}} name="username" class="form-control mb-2" />
+        
+        <label for="email">Email:</label>
+        <input type="email" value={{current_user.email}} name="email" class="form-control mb-2" />
+        
+        <label for="password">Password:</label>
+        <input type="password" name="password" class="form-control mb-2" />
+        
+        <button type="checkbox" value=True checked>Click To Make Private</button>
+        
+        <!-- <input type="checkbox" name="checkbox" onclick=myFunction() value="True"/>
+        <label for="checkbox"></label> -->
 
-            <label for="username">Username:</label>
-            <input value={{current_user.username}} name="username" class="form-control mb-2" />
-            
-            <label for="email">Email:</label>
-            <input type="email" value={{current_user.email}} name="email" class="form-control mb-2" />
-            
-            <label for="password">Password:</label>
-            <input type="password" name="password" class="form-control mb-2" />
-
-            <input id="private" name="check" type="checkbox">
-            <label for="private">Make Private</label>
-
-        </div>
-        <button class="btn btn-primary ml-3" type="submit">Update Information</button>
-    </form>
+        
+    </div>
+    <button class="btn btn-primary ml-3" type="submit">Update Information</button>
+</form>
 
 <ul></ul>
 
-    <h2 class="ml-3">Change Profile Picture</h2>
+<h2 class="ml-3">Change Profile Picture</h2>
 
-    <div class="row">
-        <div class="col-3">
-            <img class ="ml-3 img-fluid" src="{{current_user.profile_photo_url}}"/>
-            <!-- <img class ="ml-3 img-fluid" src="/static/images/placeholder_profile_photo.jpg"/> -->
-
-        </div>
-
-        <div class="col-9">
-            <form action="{{url_for('images.update', id=current_user.id)}}" method="POST" enctype="multipart/form-data">
-                <input type="hidden" name="csrf_token" value="{{csrf_token()}}"/>
-                <input type="file" name="profile_image" >
-                <button type="submit" class="btn btn-primary">Upload File</button>
-            </form>
-        </div>
+<div class="row">
+    <div class="col-3">
+        <img class ="ml-3 img-fluid" src="{{current_user.profile_photo_url}}"/>
+        
     </div>
+    
+    <div class="col-9">
+        <form action="{{url_for('images.update', id=current_user.id)}}" method="POST" enctype="multipart/form-data">
+            <input type="hidden" name="csrf_token" value="{{csrf_token()}}"/>
+            <input type="file" name="profile_image" >
+            <button type="submit" class="btn btn-primary">Upload File</button>
+        </form>
+    </div>
+</div>
 
 {% endblock %}
