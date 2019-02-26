@@ -1,0 +1,96 @@
+{% extends "_layout.html" %}
+{% block content %}
+
+
+<!-- Script for braintree -->
+<script src="https://js.braintreegateway.com/web/dropin/1.10.0/js/dropin.js"></script>
+
+<form class="m-4">
+        <h2>Donate and save a life</h2>
+        <input type="hidden" name="csrf_token" value="{{csrf_token()}}"/>
+    
+        <div class="form-group ml-3 mr-3">
+            
+            <label for="amount">How much would you like to donate?</label>
+            <input value="100" name="amount" class="form-control mb-2" />
+        
+        </div>
+        
+        <div id="dropin-container" class="m-4"></div>
+        
+        <button class="btn btn-primary ml-3" type="submit">Donate</button>
+        
+</form>
+
+<!-- Body -->
+<script>
+        var button = document.querySelector('#submit-button');
+
+        braintree.dropin.create({
+          authorization: 'sandbox_g42y39zw_348pk9cgf3bgyw2b',
+          selector: '#dropin-container'
+        }, function (err, instance) {
+          if (err) {
+            // An error in the create call is likely due to
+            // incorrect configuration values or network issues
+            return;
+          }
+        
+          button.addEventListener('click', function () {
+            instance.requestPaymentMethod(function (err, payload) {
+              if (err) {
+                // An appropriate error will be shown in the UI
+                return;
+              }
+        
+              // Submit payload.nonce to your server
+            });
+          })
+        });
+
+</script>
+
+<!-- Style -->
+
+<style>
+
+    .button {
+        cursor: pointer;
+        font-weight: 500;
+        left: 3px;
+        line-height: inherit;
+        position: relative;
+        text-decoration: none;
+        text-align: center;
+        border-style: solid;
+        border-width: 1px;
+        border-radius: 3px;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        display: inline-block;
+        }
+        
+        .button--small {
+        padding: 10px 20px;
+        font-size: 0.875rem;
+        }
+        
+        .button--green {
+        outline: none;
+        background-color: #64d18a;
+        border-color: #64d18a;
+        color: white;
+        transition: all 200ms ease;
+        }
+        
+        .button--green:hover {
+        background-color: #8bdda8;
+        color: white;
+        }
+
+
+
+
+</style>
+{% endblock %}
+

@@ -47,7 +47,7 @@ def show(username):
     # Get list of images related to this user using the backref
     user_images=user.images
   
-    
+    # breakpoint()
     return render_template('users/profile.html', user = user,user_images=user_images)
 
 @users_blueprint.route('/', methods=["GET"])
@@ -81,7 +81,6 @@ def update(id):
     
     user.username=username_form
     user.email=email_form
-    # breakpoint()
     # If profile is private and returns something, means user wants to make public
     if user.private == True and privacy_form:
         user.private = False

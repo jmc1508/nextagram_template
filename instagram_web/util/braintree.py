@@ -11,12 +11,11 @@ gateway = braintree.BraintreeGateway(
     )
 )
 
-
 # Braintree - generate a client token
-# client_token = gateway.client_token.generate({
-#     "customer_id": a_customer_id
-# })
-
-# Braintree - generate a client token
-def client_token():
+def generate_client_token():
   return gateway.client_token.generate()
+
+# Braintree - receive a payment method nonce from your client once a purchase has been done
+def create_purchase():
+  nonce_from_the_client = request.form["payment_method_nonce"]
+

@@ -34,9 +34,15 @@
         <div class="row">
             <!-- Display photos -->
             {%for image in user_images%}
-                <div class="col-sm-4 mb-2 text-center">
-                    <img class="img-fluid" src="{{image.gallery_photo_url}}"/>
-                </div>
+            <div class="col-sm-4 mb-2 text-center">
+                    <form action="{{url_for('donations.new',image_id=image.id)}}" method="POST">
+                        <input type="hidden" name="csrf_token" value="{{csrf_token()}}"/>
+                        <img class="img-fluid" style="width:100%" src="{{image.gallery_photo_url}}"/>
+                        <br/>
+                        <button type="submit" class="btn btn-primary" >Donate</button>
+                        <input type="hidden" name="donor" value={{current_user.id}}>
+                    </form>
+                    </div>
             {%endfor%}
         </div> 
     {%endif%}
