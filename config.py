@@ -14,6 +14,11 @@ class Config(object):
     S3_SECRET                 = os.environ.get("S3_SECRET_ACCESS_KEY")
     S3_LOCATION               = f'http://{S3_BUCKET}.s3.amazonaws.com/'
 
+# Braintree keys
+
+    BRAINTREE_PUBLIC_KEY      = os.environ.get("BRAINTREE_PUBLIC_KEY")
+    BRAINTREE_PRIVATE_KEY     = os.environ.get("BRAINTREE_PRIVATE_KEY")
+    BRAINTREE_MERCHANT_ID = os.environ.get("BRAINTREE_MERCHANT_ID")
 class ProductionConfig(Config):
     DEBUG = False
     ASSETS_DEBUG = False
@@ -36,8 +41,6 @@ class TestingConfig(Config):
     ASSETS_DEBUG = True
 
 
-
-# AWS S3 configuration
 
 
 

@@ -75,13 +75,18 @@ def update(id):
     email_form=request.form['email']
     password_form=request.form.get('password')
 
-    # print(request.form['checkbox'])
-    # breakpoint()
+    privacy_form= request.form.get('checkbox')
+    
     user= User.get_by_id(id)
     
     user.username=username_form
     user.email=email_form
 
+    # If privacy toggled, update database
+    if privacy_form:
+        user.private = True
+    else:
+        user.private=False
 
 
     # If password has been amended, change it
