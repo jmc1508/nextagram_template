@@ -5,9 +5,10 @@ from werkzeug import secure_filename
 
 from models.user import User
 from models.image import Image
+from models.donation import Donation
 from flask_login import login_required, current_user
 
-from instagram_web.util.braintree import generate_client_token
+from instagram_web.util.braintree import generate_client_token, gateway
 
 
 donations_blueprint = Blueprint('donations',
@@ -28,16 +29,30 @@ def new(image_id):
 def create(image_id):
     
     # Get form info
-    payment_method_nonce=request.form['payment_method_nonce']
-    amount = request.form['amount']
+    # payment_method_nonce=request.form['payment_method_nonce']
+    # amount = request.form['amount']
     donor_id=request.form['donor']
+    image_id=image_id
+
+    # Create a transactionr
+    result = gateway.transaction.sale({
+        'amount': request.form['amount'],
+        'payment_method_nonce': request.form['payment_method_nonce'],
+        'options': {
+            "submit_for_settlement": True
+        }
+    })
+    
+    if result.is_success:
+        print('Hello')
+        
 
     # Store in the database
     breakpoint()
-    return "HELLO"
+    return redirect(url_for('donations.show'))
 
-
-@donations_blueprint.route('/<int:image_id>', methods=["GET"])
+# Show checkout
+@donations_blueprint.route('/success', methods=["GET"])
 def show():
     pass
 
