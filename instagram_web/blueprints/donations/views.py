@@ -21,40 +21,52 @@ def new(image_id):
     
     client_token=generate_client_token()
     donor_id=request.form['donor']
+    receiver_id=request.form['receiver']
 
-    return render_template('donations/donate.html', client_token=client_token, image_id=image_id, donor_id=donor_id)
+    receiver=User.get_by_id(receiver_id)
+    receiver_username=receiver.username
+
+    return render_template('donations/donate.html', client_token=client_token, image_id=image_id, donor_id=donor_id, receiver_username =receiver_username)
 
 
 @donations_blueprint.route('/<int:image_id>', methods=['POST'])
 def create(image_id):
     
     # Get form info
-    # payment_method_nonce=request.form['payment_method_nonce']
-    # amount = request.form['amount']
+    payment_method_nonce=request.form['payment_method_nonce']
+    amount = request.form['amount']
     donor_id=request.form['donor']
     image_id=image_id
 
     # Create a transactionr
     result = gateway.transaction.sale({
-        'amount': request.form['amount'],
-        'payment_method_nonce': request.form['payment_method_nonce'],
+        'amount': amount,
+        'payment_method_nonce': payment_method_nonce,
         'options': {
             "submit_for_settlement": True
         }
     })
     
     if result.is_success:
-        print('Hello')
-        
+        transaction_id=result.transaction.id
+        donation = Donation(image=image_id, amount=amount, donor=donor_id, currency="USD",transaction_id=result.transaction.id)
+        donation.save()
+        flash('Your donation was successful')
+        return redirect(url_for('donations.show', transaction_id=transaction_id))
+    else:
+        flash('Donation failed')
+        return render_template('users/profile.html',username=current_user.username)
 
-    # Store in the database
-    breakpoint()
-    return redirect(url_for('donations.show'))
+
 
 # Show checkout
-@donations_blueprint.route('/success', methods=["GET"])
-def show():
-    pass
+@donations_blueprint.route('/success/<transaction_id>', methods=["GET"])
+def show(transaction_id):
+    
+    # flash('You have successfully made a donation.')
+
+    # donor_id=current_user.id
+    return redirect(url_for('users.show',username=current_user.username))
 
 @donations_blueprint.route('/', methods=["GET"])
 def index():

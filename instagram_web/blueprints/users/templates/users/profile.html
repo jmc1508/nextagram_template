@@ -40,7 +40,11 @@
                         <img class="img-fluid" style="width:100%" src="{{image.gallery_photo_url}}"/>
                         <br/>
                         <button type="submit" class="btn btn-primary" >Donate</button>
+                        <!-- Hidden input to capture userid -->
                         <input type="hidden" name="donor" value={{current_user.id}}>
+                        <input type="hidden" name="receiver" value={{user.id}}>
+
+
                     </form>
                     </div>
             {%endfor%}

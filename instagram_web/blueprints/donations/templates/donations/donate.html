@@ -4,13 +4,9 @@
 <div class="wrapper">
         <div class="checkout container">
       
-          <header>
-            <h1>Hi, <br>Let's test a transaction</h1>
-            <p>
-              Make a test payment with Braintree using PayPal or a card
-            </p>
-          </header>
-      
+          <h2>Make a donation. Make someone happy.</h2>
+          <p><strong>{{current_user.username}}</strong>, make a generous donation to <strong>{{receiver_username}}</strong>.</p>
+     
           <form id="payment-form" method="post" action="{{url_for('donations.create',image_id=image_id)}}">
             <input type="hidden" name="csrf_token" value="{{csrf_token()}}"/>
             <section>
@@ -27,7 +23,7 @@
             </section>
       
             <input type="hidden" id="nonce" name="payment_method_nonce" />
-            <button class="button" type="submit" id="submit-button"><span>Test Transaction</span></button>
+            <button class="button" type="submit" id="submit-button"><span>Donate</span></button>
             <input type="hidden" name="donor" value={{donor_id}}>
         </form>
       
