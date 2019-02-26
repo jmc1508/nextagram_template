@@ -75,13 +75,14 @@ def update(id):
     email_form=request.form['email']
     password_form=request.form.get('password')
 
-
+    # print(request.form['checkbox'])
+    # breakpoint()
     user= User.get_by_id(id)
     
     user.username=username_form
     user.email=email_form
 
-    breakpoint()
+
 
     # If password has been amended, change it
     if password_form:

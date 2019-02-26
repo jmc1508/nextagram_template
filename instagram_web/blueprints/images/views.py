@@ -4,7 +4,8 @@ from instagram_web.util.upload import upload_file_to_s3, allowed_file
 
 from werkzeug import secure_filename
 
-from models.user import User, Image
+from models.user import User
+from models.image import Image
 from flask_login import login_required, current_user
 
 
