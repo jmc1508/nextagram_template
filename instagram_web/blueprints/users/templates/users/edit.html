@@ -19,8 +19,14 @@
         <input type="password" name="password" class="form-control mb-2" />
         
         <input name="checkbox" type="checkbox"/>
-        <label for="checkbox">Make Private</label>
-        
+        <!-- <label for="checkbox">Toggle Privacy</label> -->
+
+        {%if current_user.private==True%}
+            <label for="checkbox">Toggle Public Profile</label>
+        {%else%}
+            <label for="checkbox">Toggle Private Profile</label>
+        {%endif%}
+
     </div>
     <button class="btn btn-primary ml-3" type="submit">Update Information</button>
 </form>

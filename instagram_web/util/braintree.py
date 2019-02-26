@@ -17,5 +17,6 @@ gateway = braintree.BraintreeGateway(
 #     "customer_id": a_customer_id
 # })
 
+# Braintree - generate a client token
 def client_token():
   return gateway.client_token.generate()

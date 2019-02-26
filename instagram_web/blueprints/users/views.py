@@ -81,13 +81,12 @@ def update(id):
     
     user.username=username_form
     user.email=email_form
-
-    # If privacy toggled, update database
-    if privacy_form:
-        user.private = True
+    # breakpoint()
+    # If profile is private and returns something, means user wants to make public
+    if user.private == True and privacy_form:
+        user.private = False
     else:
-        user.private=False
-
+        user.private=True
 
     # If password has been amended, change it
     if password_form:

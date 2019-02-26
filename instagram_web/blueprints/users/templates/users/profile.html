@@ -27,7 +27,6 @@
 </div>
 <!-- Gallery of Images -->
 <div class="mt-4 container-fluid ml-4">
-    <!-- <h2>@{{user.username}}'s Gallery</h2> -->
     <!-- Condition: if private setting is true, do not display -->
     {%if user.private==True %}    
         <div>Private profile</div>
@@ -37,7 +36,7 @@
             {%for image in user_images%}
                 <div class="col-sm-4 mb-2 text-center">
                     <img class="img-fluid" src="{{image.gallery_photo_url}}"/>
-                </div>    
+                </div>
             {%endfor%}
         </div> 
     {%endif%}
