@@ -40,6 +40,7 @@ def create():
         return render_template('users/sign_up.html', errors=user.errors)
 
 @users_blueprint.route('/<username>', methods=["GET"])
+@login_required
 def show(username):
     # Get user object
     user=User.get_or_none(User.username==username)

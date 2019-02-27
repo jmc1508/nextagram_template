@@ -5,50 +5,61 @@
 
 
 <!-- Profile Photo -->
-<div class="ml-4 mt-4 container-fluid">
-    <div class="row">
-        <div class="col-6">
-            <h2>Welcome @{{user.username}}</h2>
-            <img class="ml-3 img-fluid img-circle" src="{{user.profile_photo_url}}" />
+<div class="bg-light pt-4">
+
+    <div class="ml-4 container-fluid">
+        <div class="row">
+            <div class="col-6">
+                <h4>{{user.username}}</h2>
+                <img class="ml-3 img-fluid img-thumbnail rounded-circle" src="{{user.profile_photo_url}}" />
+            </div>
+                <!-- Conditonal: if user is authenticated and url is that username,allow submit button -->
+                {%if current_user.is_authenticated and current_user.username ==user.username%}
+            <div class="col-6">
+                <form action="{{url_for('images.update_image_library',username=current_user.username, id=current_user.id)}}"
+                    method="POST" enctype="multipart/form-data">
+                    <input type="hidden" name="csrf_token" value="{{csrf_token()}}" />
+                    <input type="file" name="image_gallery">
+                    <button type="submit" class="btn btn-primary">Post Photo</button>
+                </form>
+            </div>
+            {%else%}
+            <!-- Do not display the submit -->
+            {%endif%}
         </div>
-        <!-- Conditonal: if user is authenticated and url is that username,allow submit button -->
-        {%if current_user.is_authenticated and current_user.username ==user.username%}
-        <div class="col-6">
-            <form action="{{url_for('images.update_image_library',username=current_user.username, id=current_user.id)}}"
-                method="POST" enctype="multipart/form-data">
-                <input type="hidden" name="csrf_token" value="{{csrf_token()}}" />
-                <input type="file" name="image_gallery">
-                <button type="submit" class="btn btn-primary">Post Photo</button>
-            </form>
-        </div>
+    </div>
+    <!-- Gallery of Images -->
+    <div class="mt-4 container-fluid ml-4">
+        <!-- Condition: if private setting is true, do not display -->
+        {%if user.private==True %}
+        <div>Private profile</div>
         {%else%}
-        <!-- Do not display the submit -->
+        <div class="row">
+            <!-- Display photos -->
+            {%for image in user_images%}
+            <div class="col-lg-4 col-md-6 col-sm-12 mb-2">
+                <form action="{{url_for('donations.new',image_id=image.id)}}" method="POST">
+                    <input type="hidden" name="csrf_token" value="{{csrf_token()}}"  />
+                    <a href="{{image.gallery_photo_url}}" data-toggle="lightbox">    
+                        <img class="img-fluid img-thumbnail"  style="widows: 300px;; height:300px" src="{{image.gallery_photo_url}}" />
+                    </a>  
+                    <button type="submit" class="btn btn-primary">Donate</button>
+                    <!-- Hidden input to capture userid -->
+                    <input type="hidden" name="donor" value={{current_user.id}}>
+                    <input type="hidden" name="receiver" value={{user.id}}>
+                </form>
+            </div>
+            {%endfor%}
+        </div>
         {%endif%}
     </div>
-</div>
-<!-- Gallery of Images -->
-<div class="mt-4 container-fluid ml-4">
-    <!-- Condition: if private setting is true, do not display -->
-    {%if user.private==True %}
-    <div>Private profile</div>
-    {%else%}
-    <div class="row">
-        <!-- Display photos -->
-        {%for image in user_images%}
-        <div class="col-sm-4 mb-2 text-center">
-            <form action="{{url_for('donations.new',image_id=image.id)}}" method="POST">
-                <input type="hidden" name="csrf_token" value="{{csrf_token()}}" />
-                <img class="img-fluid" style="width:100%" src="{{image.gallery_photo_url}}" />
-                <br />
-                <button type="submit" class="btn btn-primary">Donate</button>
-                <!-- Hidden input to capture userid -->
-                <input type="hidden" name="donor" value={{current_user.id}}>
-                <input type="hidden" name="receiver" value={{user.id}}>
-            </form>
-        </div>
-        {%endfor%}
-    </div>
-    {%endif%}
+    
 </div>
 
+<script>
+    $(document).on('click', '[data-toggle="lightbox"]', function(event) {
+        event.preventDefault();
+        $(this).ekkoLightbox();
+    });
+</script>
 {%endblock%}
