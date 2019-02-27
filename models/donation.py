@@ -21,6 +21,8 @@ class Donation(BaseModel):
     # def validate(self):
 
     #     # Amount
-    #     if amount>2000:
+    #     if float(self.amount)>float(2000):
     #         self.errors.append('Error: You cannot donate more than 2,000')
+
+        
         

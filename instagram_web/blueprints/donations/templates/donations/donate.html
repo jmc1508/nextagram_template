@@ -13,7 +13,7 @@
               <label for="amount">
                 <span class="input-label">Amount</span>
                 <div class="input-wrapper amount-wrapper">
-                  <input id="amount" name="amount" type="tel" min="1" placeholder="Amount" value="10">
+                  <input id="amount" name="amount" type="number" step="0.01" min="1"  placeholder="Amount" value="10">
                 </div>
               </label>
       
@@ -24,7 +24,9 @@
       
             <input type="hidden" id="nonce" name="payment_method_nonce" />
             <button class="button" type="submit" id="submit-button"><span>Donate</span></button>
-            <input type="hidden" name="donor" value={{donor_id}}>
+            <!-- Hidden: So that we can get donor_id from request.form -->
+            <input type="hidden" name="donor_id" value={{donor_id}}>
+            <input type="hidden" name="receiver_username" value={{receiver_username}}>
         </form>
       
         </div>
