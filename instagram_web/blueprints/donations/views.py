@@ -8,8 +8,10 @@ from models.image import Image
 from models.donation import Donation
 from flask_login import login_required, current_user
 
+# Braintree import
 from instagram_web.util.braintree import generate_client_token, gateway
-
+# Sendgrid impot
+from instagram_web.util.sendgrid import send_donation_email
 
 donations_blueprint = Blueprint('donations',
                                 __name__,
@@ -39,6 +41,11 @@ def create(image_id):
     receiver_username = request.form['receiver_username']
     image_id = image_id
 
+    # Get donor_id details
+    donor=User.get_by_id(donor_id)
+    sender= donor.email
+
+    breakpoint()
     # Create a transactionr
     result = gateway.transaction.sale({
         # Need to amend amount
@@ -56,13 +63,14 @@ def create(image_id):
 
         if donation.save():
             flash(f'Your {result.transaction.currency_iso_code}{amount} donation to {receiver_username} was successful. The receipt number is {result.transaction.id}')
+            email=send_donation_email(amount=amount, receiver="bobteo1956@gmail.com", sender = sender)
             return redirect(url_for('donations.show', transaction_id=transaction_id))
         else:
             flash('Your donation could not save to the database. Data validation failed?')
             return redirect(url_for('users.show', username=current_user.username))
 
     else:
-        # breakpoint()
+
         flash(f'Donation failed: {result.transaction.status}')
         return redirect(url_for('users.show', username=current_user.username))
 
