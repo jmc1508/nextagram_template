@@ -32,10 +32,10 @@ def _db_close(exc):
     return exc 
 
 # View: Index [app.py]
-@app.route("/")
-def index():
+# @app.route("/")
+# def index():
 
-    return render_template('home.html')
+#     return render_template('home.html')
 
 # Added: Error handler 404
 @app.errorhandler(404)
