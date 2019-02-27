@@ -1,7 +1,7 @@
 import braintree
 from app import app
 
-# Configure the environment
+# Braintree: Authentication process
 gateway = braintree.BraintreeGateway(
     braintree.Configuration(
         braintree.Environment.Sandbox,

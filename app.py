@@ -35,9 +35,6 @@ def _db_close(exc):
 @app.route("/")
 def index():
 
-    if 'username' in session:
-        print ('User in session')
-
     return render_template('home.html')
 
 # Added: Error handler 404

@@ -20,7 +20,7 @@ donations_blueprint = Blueprint('donations',
 
 @donations_blueprint.route('/new/<int:image_id>', methods=['POST'])
 def new(image_id):
-
+    # Create client_token - needed to open donation form
     client_token = generate_client_token()
     donor_id = request.form['donor']
     receiver_id = request.form['receiver']
@@ -45,7 +45,6 @@ def create(image_id):
     donor=User.get_by_id(donor_id)
     sender= donor.email
 
-    breakpoint()
     # Create a transactionr
     result = gateway.transaction.sale({
         # Need to amend amount

@@ -6,6 +6,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_wtf.csrf import CSRFProtect, CSRFError
 from flask_login import LoginManager, login_user, login_required,logout_user, current_user
 
+# Google Authorize
+from instagram_web.util.google_oauth import google
 sessions_blueprint = Blueprint('sessions',
                             __name__,
                             template_folder='templates/')
@@ -13,15 +15,17 @@ sessions_blueprint = Blueprint('sessions',
 
 
 # Moved
-@sessions_blueprint.route('/new', methods=['GET'])
+@sessions_blueprint.route('/', methods=['GET'])
 def new():
+    redirect_uri = url_for('sessions.google_login', _external=True)
+    return google.authorize_redirect(redirect_uri)
+    # return redirect(google.authorize_url)
+
+@sessions_blueprint.route('/authorize/google', methods=['GET'])
+def google_login():
     
-    pass
-
-@sessions_blueprint.route('/', methods=['POST'])
-def create():
-    pass
-
+    breakpoint()
+    
 
 @sessions_blueprint.route('/<username>', methods=["GET"])
 @login_required
@@ -79,3 +83,5 @@ def sign_out():
     logout_user()
     flash("You have successfully logged out!")
     return redirect(url_for('index'))
+
+

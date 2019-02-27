@@ -22,7 +22,11 @@ class Config(object):
 
     SENDGRID_API_KEY = os.environ.get("SENDGRID_API_KEY")
 
+# Google Oauth
+    GOOGLE_CLIENT_ID=os.environ.get("GOOGLE_CLIENT_ID")
+    GOOGLE_CLIENT_SECRET=os.environ.get("GOOGLE_CLIENT_SECRET")
 
+# Config for different environment
 class ProductionConfig(Config):
     DEBUG = False
     ASSETS_DEBUG = False
