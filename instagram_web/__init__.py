@@ -34,11 +34,6 @@ def load_user(id):
 def internal_server_error(e):
     return render_template('500.html'), 500
 
-
-@app.route("/")
-def home():
-    return render_template('home.html')
-
 # Initialise blueprints
 
 from instagram_web.blueprints.users.views import users_blueprint

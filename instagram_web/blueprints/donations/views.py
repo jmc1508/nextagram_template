@@ -57,12 +57,13 @@ def create(image_id):
 
     if result.is_success:
         transaction_id = result.transaction.id
+        # Add row in Donation model
         donation = Donation(image=image_id, amount=amount, donor=donor_id,
                             currency="USD", transaction_id=result.transaction.id)
 
         if donation.save():
             flash(f'Your {result.transaction.currency_iso_code}{amount} donation to {receiver_username} was successful. The receipt number is {result.transaction.id}')
-            email=send_donation_email(amount=amount, receiver="bobteo1956@gmail.com", sender = sender)
+            email=send_donation_email(receiver_email="bobteo1956@gmail.com", receiver_username=receiver_username, amount=amount,  sender_email = sender)
             return redirect(url_for('donations.show', transaction_id=transaction_id))
         else:
             flash('Your donation could not save to the database. Data validation failed?')

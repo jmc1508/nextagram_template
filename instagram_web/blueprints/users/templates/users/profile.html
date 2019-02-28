@@ -3,25 +3,38 @@
 {% extends "_layout.html" %}
 {% block content %}
 
+<!-- Can get current_user.username and user.username -->
 
 <!-- Profile Photo -->
-<div class="bg-light pt-4">
+<div class="bg-white pt-4">
 
     <div class="ml-4 container-fluid">
         <div class="row">
             <div class="col-6">
                 <h4>{{user.username}}</h2>
-                <img class="ml-3 img-fluid img-thumbnail rounded-circle" src="{{user.profile_photo_url}}" />
+                {%if current_user.is_authenticated and current_user.username != user.username%}
+                    <form action="{{url_for('users.new_follower')}}" method="POST">
+                        <input type="hidden" name="csrf_token" value="{{csrf_token()}}" />
+                        <button type="submit" class="btn btn-primary">Follow</button>
+                        <input type="hidden" name="follower_username" value="{{current_user.username}}" />
+                        <input type="hidden" name="idol_username" value="{{user.username}}" />
+                    </form>
+                {%endif%}
+                <div>
+                    <img class="ml-3 img-fluid img-thumbnail rounded-circle" style="width: 300px; height:300px"    src="{{user.profile_photo_url}}" />
+                </div>
             </div>
                 <!-- Conditonal: if user is authenticated and url is that username,allow submit button -->
-                {%if current_user.is_authenticated and current_user.username ==user.username%}
+            {%if current_user.is_authenticated and current_user.username ==user.username%}
             <div class="col-6">
-                <form action="{{url_for('images.update_image_library',username=current_user.username, id=current_user.id)}}"
-                    method="POST" enctype="multipart/form-data">
-                    <input type="hidden" name="csrf_token" value="{{csrf_token()}}" />
-                    <input type="file" name="image_gallery">
-                    <button type="submit" class="btn btn-primary">Post Photo</button>
-                </form>
+                    <div>
+                        <form action="{{url_for('images.update_image_library',username=current_user.username, id=current_user.id)}}"
+                            method="POST" enctype="multipart/form-data">
+                            <input type="hidden" name="csrf_token" value="{{csrf_token()}}" />
+                            <input type="file" name="image_gallery">
+                            <button type="submit" class="btn btn-primary">Post Photo</button>
+                        </form>
+                    </div>
             </div>
             {%else%}
             <!-- Do not display the submit -->

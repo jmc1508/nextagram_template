@@ -1,5 +1,6 @@
 from flask import Blueprint,  Flask, render_template, request,redirect,url_for,flash,session
 from models.user import User
+from models.follower import Follower
 from models.base_model import db
 from flask_login import login_user, login_required, current_user
 
@@ -48,11 +49,12 @@ def show(username):
     # Get list of images related to this user using the backref
     user_images=user.images
   
-    # breakpoint()
+
     return render_template('users/profile.html', user = user,user_images=user_images)
 
-@users_blueprint.route('/', methods=["GET"])
+@users_blueprint.route('/', methods=["POST"])
 def index():
+
     return render_template('home.html')
 
 
@@ -98,7 +100,23 @@ def update(id):
     else:
         return render_template('/users/edit.html',errors=user.errors)
 
+@users_blueprint.route('/follower/', methods=["POST"])
+def new_follower():
 
+    follower_username=request.form['follower_username']
+    idol_username = request.form['idol_username']
+
+    # Get ID and add to DB
+
+    follower_id=User.get_or_none(User.username==follower_username)
+    idol_id=User.get_or_none(User.username==idol_username)
+ 
+    new_follower=Follower(follower_id=follower_id, idol_id=idol_id)
+    new_follower.save()
+
+    flash(f'You have followed {idol_username}')
+
+    return render_template('home.html')
 
 
     
