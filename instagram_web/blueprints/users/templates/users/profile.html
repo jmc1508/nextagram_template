@@ -19,15 +19,21 @@
         <div class="row">
             <div class="col-4">
                 <h4>{{user.username}}</h2>
-                {%if current_user.is_authenticated and current_user.username != user.username%}
-                    <form action="{{url_for('users.new_follower')}}" method="POST">
+                    {%if current_user.is_authenticated and current_user.username != user.username and toggle_unfollow==False %}
+                    <form action="{{url_for('users.follow_user')}}" method="POST">
                         <input type="hidden" name="csrf_token" value="{{csrf_token()}}" />
                         <button type="submit" class="btn btn-primary">Follow</button>
-
                         <input type="hidden" name="follower_username" value="{{current_user.username}}" />
                         <input type="hidden" name="idol_username" value="{{user.username}}" />
                     </form>
-                {%endif%}
+                    {%elif current_user.is_authenticated and current_user.username != user.username and toggle_unfollow==True%}
+                    <form action="{{url_for('users.unfollow_user')}}" method="POST">
+                        <input type="hidden" name="csrf_token" value="{{csrf_token()}}" />
+                        <button type="submit" class="btn btn-primary">Unfollow</button>
+                        <input type="hidden" name="follower_username" value="{{current_user.username}}" />
+                        <input type="hidden" name="idol_username" value="{{user.username}}" />
+                    </form>
+                    {%endif%}
                 <div>
                     <img class="ml-3 img-fluid img-thumbnail rounded-circle" style="width: 300px; height:300px"    src="{{user.profile_photo_url}}" />
                 </div>
@@ -67,7 +73,7 @@
         {%else%}
         <div class="row">
             <!-- Display photos -->
-            {%for image in user_images%}
+            {%for image in user.images%}
             <div class="col-lg-4 col-md-6 col-sm-12 mb-2">
                 <form action="{{url_for('donations.new',image_id=image.id)}}" method="POST">
                     <input type="hidden" name="csrf_token" value="{{csrf_token()}}"  />

@@ -43,34 +43,45 @@ def create():
 @users_blueprint.route('/<username>', methods=["GET"])
 @login_required
 def show(username):
-    # Get user object
+    
+    # If current_user is a follower of page's idol, toggle Unfollow button
+    
+    
+    # Object of profile page user
     user=User.get_or_none(User.username==username)
 
-    # Get relationship objects
-    relationship_followers=Relationship.get_or_none(Relationship.follower_id==user.id)
-    relationship_following=Relationship.get_or_none(Relationship.idol_id==user.id)
+    result = Relationship.get_or_none(current_user.id==Relationship.follower_id, user.id==Relationship.idol_id)
+    
+    if result:
+        toggle_unfollow=True
+    else:
+        toggle_unfollow=False
 
+    
+    # Get relationship objects
+    relationship_following=Relationship.get_or_none(Relationship.follower_id==user.id)  #To see who I am following, look in the follower_id column
+    relationship_followers=Relationship.get_or_none(Relationship.idol_id==user.id)
+    
     # Get list of images related to this user using the backref
     user_images=user.images
-  
-    # Return a list of users currently following
-    # If user.username is in list of users being followed, then toggle false
+ 
+    # Get count of who this user is following
 
-    # Get count of followers and following
+    if relationship_following:
+        following=relationship_following.count_idols()
+        # list_following=relationship_following.get_idols()
+    else:
+        following=0
+        
     if relationship_followers:
         followers=relationship_followers.count_fans()
     else:
         followers=0
     
-    if relationship_following:
-        following=relationship_following.count_idols()
-    else:
-        following=0
     
-    # Get list of users currently following - to display follow or unfollow button
+    # print(list_following)
     
-
-    return render_template('users/profile.html', user = user,user_images=user_images, followers=followers, following=following)
+    return render_template('users/profile.html', user = user,followers=followers, following=following, toggle_unfollow=toggle_unfollow)
 
 @users_blueprint.route('/', methods=["POST"])
 def index():
@@ -121,7 +132,7 @@ def update(id):
         return render_template('/users/edit.html',errors=user.errors)
 
 @users_blueprint.route('/follower/', methods=["POST"])
-def new_follower():
+def follow_user():
 
     follower_username=request.form['follower_username']
     idol_username = request.form['idol_username']
@@ -138,6 +149,24 @@ def new_follower():
 
     return render_template('home.html')
 
+@users_blueprint.route('/unfollow/', methods=["POST"])
+def unfollow_user():
+
+
+    follower_username=request.form['follower_username']
+    idol_username = request.form['idol_username']
+
+    idol_id=User.get(User.username==idol_username)
+
+    result=Relationship.get_or_none(current_user.id==Relationship.follower_id, Relationship.idol_id==idol_id.id)
+    
+    # Delete record where Relationship.id = result
+    query = Relationship.get_by_id(result)
+    query.delete_instance()
+
+    flash(f'You have unfollowed {idol_username}')
+
+    return render_template('home.html')
 
 @users_blueprint.route('/test_layout')
 def test_layout():
