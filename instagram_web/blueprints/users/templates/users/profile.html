@@ -2,7 +2,14 @@
 
 {% extends "_layout.html" %}
 {% block content %}
+<style>
+    .test{
+        height: 50vh
 
+    }
+
+
+</style>
 <!-- Can get current_user.username and user.username -->
 
 <!-- Profile Photo -->
@@ -10,7 +17,7 @@
 
     <div class="ml-4 container-fluid">
         <div class="row">
-            <div class="col-6">
+            <div class="col-4">
                 <h4>{{user.username}}</h2>
                 {%if current_user.is_authenticated and current_user.username != user.username%}
                     <form action="{{url_for('users.new_follower')}}" method="POST">
@@ -25,20 +32,22 @@
                 </div>
             </div>
                 <!-- Conditonal: if user is authenticated and url is that username,allow submit button -->
-            {%if current_user.is_authenticated and current_user.username ==user.username%}
-            <div class="col-6">
+            <div class="col-8">
+  
+                <div class="test">
+                    {%if current_user.is_authenticated and current_user.username ==user.username%}
                     <div>
                         <form action="{{url_for('images.update_image_library',username=current_user.username, id=current_user.id)}}"
-                            method="POST" enctype="multipart/form-data">
-                            <input type="hidden" name="csrf_token" value="{{csrf_token()}}" />
-                            <input type="file" name="image_gallery">
-                            <button type="submit" class="btn btn-primary">Post Photo</button>
-                        </form>
+                        method="POST" enctype="multipart/form-data">
+                        <input type="hidden" name="csrf_token" value="{{csrf_token()}}" />
+                        <input type="file" name="image_gallery">
+                        <button type="submit" class="btn btn-primary">Post Photo</button>
+                    </form>
                     </div>
+                    {%endif%}
+                </div>
+                
             </div>
-            {%else%}
-            <!-- Do not display the submit -->
-            {%endif%}
         </div>
     </div>
     <!-- Gallery of Images -->

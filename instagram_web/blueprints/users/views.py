@@ -1,6 +1,6 @@
 from flask import Blueprint,  Flask, render_template, request,redirect,url_for,flash,session
 from models.user import User
-from models.follower import Follower
+from models.relationship import Relationship
 from models.base_model import db
 from flask_login import login_user, login_required, current_user
 
@@ -111,12 +111,24 @@ def new_follower():
     follower_id=User.get_or_none(User.username==follower_username)
     idol_id=User.get_or_none(User.username==idol_username)
  
-    new_follower=Follower(follower_id=follower_id, idol_id=idol_id)
-    new_follower.save()
+    add_follower=Relationship(follower_id=follower_id, idol_id=idol_id)
+    add_follower.save()
+
+    # Get list of followers
+    result=Relationship.get_idols(self=add_follower)
+    print(result)
 
     flash(f'You have followed {idol_username}')
 
+    
     return render_template('home.html')
+
+
+@users_blueprint.route('/test_layout')
+def test_layout():
+
+
+    return render_template('/users/new.html')
 
 
     
