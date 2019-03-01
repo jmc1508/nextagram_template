@@ -46,11 +46,31 @@ def show(username):
     # Get user object
     user=User.get_or_none(User.username==username)
 
+    # Get relationship objects
+    relationship_followers=Relationship.get_or_none(Relationship.follower_id==user.id)
+    relationship_following=Relationship.get_or_none(Relationship.idol_id==user.id)
+
     # Get list of images related to this user using the backref
     user_images=user.images
   
+    # Return a list of users currently following
+    # If user.username is in list of users being followed, then toggle false
 
-    return render_template('users/profile.html', user = user,user_images=user_images)
+    # Get count of followers and following
+    if relationship_followers:
+        followers=relationship_followers.count_fans()
+    else:
+        followers=0
+    
+    if relationship_following:
+        following=relationship_following.count_idols()
+    else:
+        following=0
+    
+    # Get list of users currently following - to display follow or unfollow button
+    
+
+    return render_template('users/profile.html', user = user,user_images=user_images, followers=followers, following=following)
 
 @users_blueprint.route('/', methods=["POST"])
 def index():
@@ -114,13 +134,8 @@ def new_follower():
     add_follower=Relationship(follower_id=follower_id, idol_id=idol_id)
     add_follower.save()
 
-    # Get list of followers
-    result=Relationship.get_idols(self=add_follower)
-    print(result)
-
     flash(f'You have followed {idol_username}')
 
-    
     return render_template('home.html')
 
 

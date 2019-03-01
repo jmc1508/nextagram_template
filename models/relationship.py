@@ -9,11 +9,6 @@ class Relationship(BaseModel):
     follower=pw.ForeignKeyField(User, backref='idols')
     idol=pw.ForeignKeyField(User, backref='followers')
 
-    def validate(self):
-    
-   
-        pass
-
     def get_idols(self): #Who is the user following?
 
         list_following=[]
@@ -28,5 +23,18 @@ class Relationship(BaseModel):
 
     def count_idols(self):
 
-        pass
 
+        # query=(User.select(User, pw.fn.Count(Relationship.follower_id)).join(Relationship, on=Relationship.follower_id).group_by(User)).having(User.id==self.follower_id)
+
+        # count = query[0].count
+
+        count=User.select().join(Relationship, on=Relationship.follower_id).where(User.id==self.follower_id).count()
+        return count
+
+    def count_fans(self):
+
+
+        # query = (User.select(User, pw.fn.Count(Relationship.idol_id)).join(Relationship, on=Relationship.idol_id).group_by(User)).having(User.id==self.follower_id)
+
+        count=User.select().join(Relationship, on=Relationship.idol_id).where(User.id==self.follower_id).count()
+        return count
