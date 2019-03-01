@@ -8,24 +8,7 @@ class Relationship(BaseModel):
     #Fields - what backref to add?
     follower=pw.ForeignKeyField(User, backref='idols')
     idol=pw.ForeignKeyField(User, backref='followers')
-
-    # @staticmethod
-    def get_idols(self): #Who is the user following?
-
-        # list_following=[
-         # From User, get list of users being followed by current_user
-        # result=(User.select().join(Relationship, on=Relationship.idol_id).where(Relationship.follower_id==current_user.id))
-        # if result:
-        #     for following in result:
-        #         list_following.append(following.username)
-                
-        # else:
-        #     list_following=[]
-        
-        result=Relationship.get_or_none(Relationship.follower_id==current_user.id, Relationship.idol_id==self.idol_id)
-        
-        return result
-
+    
 
     def count_idols(self):
 

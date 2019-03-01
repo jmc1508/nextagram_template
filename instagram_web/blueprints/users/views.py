@@ -44,15 +44,14 @@ def create():
 @login_required
 def show(username):
     
-    # If current_user is a follower of page's idol, toggle Unfollow button
-    
-    
     # Object of profile page user
     user=User.get_or_none(User.username==username)
-
-    result = Relationship.get_or_none(current_user.id==Relationship.follower_id, user.id==Relationship.idol_id)
+    # Validation to toggle buttons
+    follower_check = Relationship.get_or_none(current_user.id==Relationship.follower_id, user.id==Relationship.idol_id)
+    user_authenticated=current_user.is_authenticated
     
-    if result:
+    # Toggle "Follow" or "Unfollow" if current user is a follower
+    if follower_check:
         toggle_unfollow=True
     else:
         toggle_unfollow=False
@@ -81,7 +80,7 @@ def show(username):
     
     # print(list_following)
     
-    return render_template('users/profile.html', user = user,followers=followers, following=following, toggle_unfollow=toggle_unfollow)
+    return render_template('users/profile.html', user = user,followers=followers, following=following, toggle_unfollow=toggle_unfollow,user_authenticated=user_authenticated)
 
 @users_blueprint.route('/', methods=["POST"])
 def index():
@@ -141,9 +140,13 @@ def follow_user():
 
     follower_id=User.get_or_none(User.username==follower_username)
     idol_id=User.get_or_none(User.username==idol_username)
- 
+    
+    
+    # If user profile = Public, then can add follower
     add_follower=Relationship(follower_id=follower_id, idol_id=idol_id)
     add_follower.save()
+
+    # Else, send a request to the user - Pending = True
 
     flash(f'You have followed {idol_username}')
 

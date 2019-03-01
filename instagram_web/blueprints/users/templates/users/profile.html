@@ -19,14 +19,14 @@
         <div class="row">
             <div class="col-4">
                 <h4>{{user.username}}</h2>
-                    {%if current_user.is_authenticated and current_user.username != user.username and toggle_unfollow==False %}
+                    {%if user_authenticated and current_user.username != user.username and toggle_unfollow==False %}
                     <form action="{{url_for('users.follow_user')}}" method="POST">
                         <input type="hidden" name="csrf_token" value="{{csrf_token()}}" />
                         <button type="submit" class="btn btn-primary">Follow</button>
                         <input type="hidden" name="follower_username" value="{{current_user.username}}" />
                         <input type="hidden" name="idol_username" value="{{user.username}}" />
                     </form>
-                    {%elif current_user.is_authenticated and current_user.username != user.username and toggle_unfollow==True%}
+                    {%elif user_authenticated and current_user.username != user.username and toggle_unfollow==True%}
                     <form action="{{url_for('users.unfollow_user')}}" method="POST">
                         <input type="hidden" name="csrf_token" value="{{csrf_token()}}" />
                         <button type="submit" class="btn btn-primary">Unfollow</button>
@@ -35,7 +35,7 @@
                     </form>
                     {%endif%}
                 <div>
-                    <img class="ml-3 img-fluid img-thumbnail rounded-circle" style="width: 300px; height:300px"    src="{{user.profile_photo_url}}" />
+                    <img class="ml-3 img-fluid img-thumbnail rounded-circle" style="width: 200px; height:200px"    src="{{user.profile_photo_url}}" />
                 </div>
 
             </div>
