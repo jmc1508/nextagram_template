@@ -1,0 +1,81 @@
+<!-- User profile -->
+
+{% extends "_layout.html" %}
+{% block content %}
+
+<h1>User Requests</h1>
+
+<div class="row ml-4 mr-4">
+
+
+    <div class="col-lg-6 border">
+        <h4>Idol Requests</h4>
+        
+        {% for idol in idols%}
+            
+            <div class="row">
+                <div class="col-lg-2 border">
+                    <img style="width: 50px; height:50px" src="{{idol.profile_photo_url}}" alt="">
+                </div>
+
+                <div class="col-lg-6 border">
+                    {{idol.username}}
+                </div>
+                
+                <div class="col-lg-4 border">
+                    <form action="{{url_for('users.unfollow_user')}}" method = "POST">
+                        <input type="hidden" name="csrf_token" value="{{csrf_token()}}" />
+                        <input type="hidden" name="idol_username" value={{idol.username}}>
+                        <input type="hidden" name="follower_username" value={{current_user.username}}>
+                        <input type="hidden" name="request_type" value=cancel_request>
+                        <button>Cancel Request</button>
+                    </form>
+                </div>
+            </div>
+
+        {%endfor%}
+        
+
+    </div>
+
+    <div class="col-lg-6 border">
+        <h4>Fan Requests</h4>
+        {% for fan in fans%}
+            
+            <div class="row">
+                <div class="col-lg-2 border">
+                    <img style="width: 50px; height:50px" src="{{fan.profile_photo_url}}" alt="">
+                </div>
+
+                <div class="col-lg-6 border">
+                    {{fan.username}}
+                </div>
+                
+                <div class="col-lg-4 border">
+                    <form action="{{url_for('users.handle_request')}}" method = "POST">
+                        <input type="hidden" name="csrf_token" value="{{csrf_token()}}" />
+                        <input type="hidden" name="idol_id" value={{current_user.id}}>
+                        <input type="hidden" name="follower_id" value={{fan.id}}>
+                        <input type="hidden" name="request_type" value=accept_request>
+                        <button>Accept Request</button>
+                    </form>
+                    <form action="{{url_for('users.handle_request')}}" method = "POST">
+                        <input type="hidden" name="csrf_token" value="{{csrf_token()}}" />
+                        <input type="hidden" name="idol_id" value={{current_user.id}}>
+                        <input type="hidden" name="follower_id" value={{fan.id}}>
+                        <input type="hidden" name="request_type" value=cancel_request>
+                        <button>Cancel Request</button>
+                    </form>
+                    
+                </div>
+            </div>
+
+        {%endfor%}
+
+
+    </div>
+
+
+</div>
+
+{% endblock %}

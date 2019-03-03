@@ -8,14 +8,14 @@ class Relationship(BaseModel):
     #Fields - what backref to add?
     follower=pw.ForeignKeyField(User, backref='idols')
     idol=pw.ForeignKeyField(User, backref='followers')
-    
+    approve=pw.BooleanField(default=True)    
 
     def count_idols(self):
 
 
         # query=(User.select(User, pw.fn.Count(Relationship.follower_id)).join(Relationship, on=Relationship.follower_id).group_by(User)).having(User.id==self.follower_id)
 
-        idol_count=User.select().join(Relationship, on=Relationship.follower_id).where(User.id==self.follower_id).count()
+        idol_count=User.select().join(Relationship, on=Relationship.follower_id).where(User.id==self.follower_id, Relationship.approve==True).count()
 
         return idol_count
 
@@ -24,6 +24,6 @@ class Relationship(BaseModel):
 
         # query = (User.select(User, pw.fn.Count(Relationship.idol_id)).join(Relationship, on=Relationship.idol_id).group_by(User)).having(User.id==self.follower_id)
 
-        fan_count=User.select().join(Relationship, on=Relationship.idol_id).where(User.id==self.idol_id).count()
+        fan_count=User.select().join(Relationship, on=Relationship.idol_id).where(User.id==self.idol_id, Relationship.approve==True).count()
 
         return fan_count

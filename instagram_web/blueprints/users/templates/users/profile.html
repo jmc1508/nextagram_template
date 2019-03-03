@@ -10,7 +10,6 @@
 
 
 </style>
-<!-- Can get current_user.username and user.username -->
 
 <!-- Profile Photo -->
 <div class="bg-white pt-4">
@@ -29,9 +28,14 @@
                     {%elif user_authenticated and current_user.username != user.username and toggle_unfollow==True%}
                     <form action="{{url_for('users.unfollow_user')}}" method="POST">
                         <input type="hidden" name="csrf_token" value="{{csrf_token()}}" />
-                        <button type="submit" class="btn btn-primary">Unfollow</button>
+                        {%if toggle_request_btn==True%}
+                            <button type="submit" class="btn btn-primary">Request Pending</button>
+                        {%elif toggle_request_btn==False%}
+                            <button type="submit" class="btn btn-primary">Unfollow</button>
+                        {%endif%}
                         <input type="hidden" name="follower_username" value="{{current_user.username}}" />
                         <input type="hidden" name="idol_username" value="{{user.username}}" />
+                        <input type="hidden" name="request_type" value="unfollow_user" />
                     </form>
                     {%endif%}
                 <div>
@@ -56,10 +60,10 @@
                 </div>
                 <div class="row">
                     <div class="col">
-                        <p>Followers: {{followers}}</p>
+                            <a href="#" data-toggle="modal" data-target="#followerModal">Followers: {{followers}}</a>
                     </div>
                     <div class="col">
-                        <p>Following: {{following}}</p>
+                        <a href="#" data-toggle="modal" data-target="#followingModal">Following: {{following}}</a>
                     </div>
                 </div>
             </div>
@@ -67,10 +71,9 @@
     </div>
     <!-- Gallery of Images -->
     <div class="mt-4 container-fluid ml-4">
-        <!-- Condition: if private setting is true, do not display -->
-        {%if user.private==True %}
+        {%if toggle_view==False %}
         <div>Private profile</div>
-        {%else%}
+        {%elif toggle_view==True%}
         <div class="row">
             <!-- Display photos -->
             {%for image in user.images%}
@@ -78,7 +81,7 @@
                 <form action="{{url_for('donations.new',image_id=image.id)}}" method="POST">
                     <input type="hidden" name="csrf_token" value="{{csrf_token()}}"  />
                     <a href="{{image.gallery_photo_url}}" data-toggle="lightbox">    
-                        <img class="img-fluid img-thumbnail"  style="widows: 300px;; height:300px" src="{{image.gallery_photo_url}}" />
+                        <img class="img-fluid img-thumbnail"  style="widows: 300px; height:300px" src="{{image.gallery_photo_url}}" />
                     </a>  
                     <button type="submit" class="btn btn-primary">Donate</button>
                     <!-- Hidden input to capture userid -->
@@ -90,8 +93,50 @@
         </div>
         {%endif%}
     </div>
-    
-</div>
+<!-- Modal: Following -->
+    <div class="modal fade" id ="followingModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4>
+                        You are following:
+                    </h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <ol class="list-unstyled">
+                        {%for following in list_following%}
+                        <li>
+                            <img class="img-fluid img-thumbnail"  style="width: 30px; height:30px" src="{{following.profile_photo_url}}" alt="">
+                            <a href="/users/{{following.username}}">{{following.username}}</a>
+                        </li>
+                        {%endfor%}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<!-- Modal: Followers -->
+<div class="modal fade" id ="followerModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4>
+                        Your followers are:
+                    </h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    {%for follower in list_follower%}
+                        <img class="img-fluid img-thumbnail"  style="width: 30px; height:30px" src="{{follower.profile_photo_url}}" alt="">
+                        <a href="/users/{{follower.username}}">{{follower.username}}</a>
+                    {%endfor%}
+                </div>
+            </div>
+        </div>
+    </div>
+
 
 <script>
     $(document).on('click', '[data-toggle="lightbox"]', function(event) {

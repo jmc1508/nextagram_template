@@ -46,29 +46,30 @@ def show(username):
     
     # Object of profile page user
     user=User.get_or_none(User.username==username)
+    
     # Validation to toggle buttons
     follower_check = Relationship.get_or_none(current_user.id==Relationship.follower_id, user.id==Relationship.idol_id)
     user_authenticated=current_user.is_authenticated
     
-    # Toggle "Follow" or "Unfollow" if current user is a follower
+    # Toggle "Follow" or "Unfollow" and "Request Pending"
     if follower_check:
         toggle_unfollow=True
+        if follower_check.approve==False:
+            toggle_request_btn=True
+        else:
+            toggle_request_btn=False
     else:
         toggle_unfollow=False
-
+        toggle_request_btn=False
     
-    # Get relationship objects
+    # Get relationship objects - gets only one instance
     relationship_following=Relationship.get_or_none(Relationship.follower_id==user.id)  #To see who I am following, look in the follower_id column
     relationship_followers=Relationship.get_or_none(Relationship.idol_id==user.id)
-    
-    # Get list of images related to this user using the backref
-    user_images=user.images
- 
+
     # Get count of who this user is following
 
     if relationship_following:
         following=relationship_following.count_idols()
-        # list_following=relationship_following.get_idols()
     else:
         following=0
         
@@ -76,11 +77,33 @@ def show(username):
         followers=relationship_followers.count_fans()
     else:
         followers=0
+
+    # Private vs. Public Profile
+    relationship_obj=Relationship.get_or_none(Relationship.follower_id==current_user.id, Relationship.idol_id==user.id)
+
+    if relationship_obj and relationship_obj.approve==True:
+        toggle_view=True
+        # Display full page
+    elif relationship_obj and relationship_obj.approve==False:
+        # Not approved yet - display private profile
+        toggle_view=False
+    elif relationship_obj==None and user.private==False:
+        #Not following, but public profile
+        toggle_view = True
+        print('Not following and public page')
+
+    elif relationship_obj==None and user.private==True:
+        #Not following and private page
+        toggle_view=False
+        print('Not following and private page')
+    else:
+        toggle_view=False
     
+    # Get list of who current user is following
+    list_following = User.select().join(Relationship, on=Relationship.idol_id).where(Relationship.follower_id==user.id, Relationship.approve==True)
+    list_follower=User.select().join(Relationship, on=Relationship.follower_id).where(Relationship.idol_id==user.id)
     
-    # print(list_following)
-    
-    return render_template('users/profile.html', user = user,followers=followers, following=following, toggle_unfollow=toggle_unfollow,user_authenticated=user_authenticated)
+    return render_template('users/profile.html', user = user,followers=followers, following=following, toggle_unfollow=toggle_unfollow,user_authenticated=user_authenticated,toggle_request_btn=toggle_request_btn, toggle_view=toggle_view,list_following=list_following, list_follower=list_follower)
 
 @users_blueprint.route('/', methods=["POST"])
 def index():
@@ -131,6 +154,7 @@ def update(id):
         return render_template('/users/edit.html',errors=user.errors)
 
 @users_blueprint.route('/follower/', methods=["POST"])
+@login_required
 def follow_user():
 
     follower_username=request.form['follower_username']
@@ -142,23 +166,28 @@ def follow_user():
     idol_id=User.get_or_none(User.username==idol_username)
     
     
-    # If user profile = Public, then can add follower
-    add_follower=Relationship(follower_id=follower_id, idol_id=idol_id)
+    # If user profile = Public, then add follower and approve
+    if idol_id.private==False:
+        add_follower=Relationship(follower_id=follower_id, idol_id=idol_id, approve=True)
+        flash(f'You have followed {idol_username}')
+    # If user profile = Private, then add follower but don't approve
+    elif idol_id.private==True:
+        add_follower=Relationship(follower_id=follower_id, idol_id=idol_id, approve=False)
+        flash(f'A friend request has been sent to {idol_username}')
+
     add_follower.save()
-
-    # Else, send a request to the user - Pending = True
-
-    flash(f'You have followed {idol_username}')
 
     return render_template('home.html')
 
 @users_blueprint.route('/unfollow/', methods=["POST"])
+@login_required
 def unfollow_user():
 
 
     follower_username=request.form['follower_username']
     idol_username = request.form['idol_username']
-
+    request_type= request.form['request_type']
+    
     idol_id=User.get(User.username==idol_username)
 
     result=Relationship.get_or_none(current_user.id==Relationship.follower_id, Relationship.idol_id==idol_id.id)
@@ -167,15 +196,48 @@ def unfollow_user():
     query = Relationship.get_by_id(result)
     query.delete_instance()
 
-    flash(f'You have unfollowed {idol_username}')
+    if request_type=='cancel_request':
+        flash(f'You have cancelled your request to follow {idol_username}')
+    elif request_type=='unfollower_user':
+        flash(f'You have unfollowed {idol_username}')
 
     return render_template('home.html')
 
-@users_blueprint.route('/test_layout')
-def test_layout():
+@users_blueprint.route('/requests/')
+@login_required
+def user_requests():
 
+    # Query - users followed by current_user
+    idols = User.select().join(Relationship, on=Relationship.idol_id).where(Relationship.follower_id==current_user.id, Relationship.approve==False)
+    fans = User.select().join(Relationship, on=Relationship.follower_id).where(Relationship.idol_id==current_user.id, Relationship.approve==False)
+    
+    return render_template('/users/requests.html', idols=idols, fans = fans)
 
-    return render_template('/users/new.html')
+@users_blueprint.route('/handle_request/',methods =['POST'])
+@login_required
+def handle_request():
+
+    follower_id=request.form['follower_id']
+    idol_id = request.form['idol_id']
+    follower=User.get_by_id(follower_id)
+
+    request_type=request.form['request_type']
+    # Change privacy setting
+    if request_type=='accept_request':
+        query = Relationship.get_or_none(Relationship.follower_id==follower_id, Relationship.idol_id==idol_id)
+        approve_request=Relationship.update(approve=True).where(Relationship.id==query)
+        approve_request.execute()
+        flash(f"You have approved {follower.username}'s request.")
+        return render_template('home.html')
+
+    elif request_type=='cancel_request':
+
+        breakpoint()
+        result=Relationship.get_or_none(Relationship.follower_id==follower_id, Relationship.idol_id==idol_id)
+        delete_request=result.delete_instance()
+        flash(f"You have denied {follower.username}'s request. ")
+        return render_template('home.html')
+
 
 
     
